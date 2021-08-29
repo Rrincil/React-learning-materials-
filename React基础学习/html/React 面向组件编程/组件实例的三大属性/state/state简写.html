@@ -16,35 +16,28 @@
     <!-- 将jsx转成js -->
     <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
     <script type="text/babel"> //type要写babel
-      // Your ES6 code
       // 1.创建类式组件
       class Weather extends React.Component {
-        constructor(props) {
-          super(props)
-          this.state = {
+        // constructor(props) {
+        //   super(props)
+        //   // this.state = {
+        //   //   ishot:true
+        //   // }
+        //   // this.newdian = this.dian.bind(this)    
+        // }
+        //直接赋值语句--放在创建的实例上
+          state = {
             ishot:true
-          }
-          //把原型对象上的dian方法重新定义成新的方法newdian挂载在实例对象上
-          this.newdian = this.dian.bind(this)    
-        }
-
+          }          
         render() {
-          //读取状态
-          // console.log(this);
-          return <h1 onClick={this.newdian}>
+          return <h1 onClick={this.dian}>
             今天天气很{this.state.ishot ? '炎热' : '凉爽'}
           </h1>
         }
-        //dian()方法发放在了---------类(Weather)的原型对象上，供实例使用
-        //由于dian作为onClick的回调，所以不是通过实例调用的，是直接调用的
-        //类中的方法默认开启了严格模式，所以dian中的this为undefined
-        dian() {
-          //严重注意：状态(state)不可直接更改,要借助一个内置的API(setState)去更改
-          // this.state.ishot=false-----直接更改
+        //直接赋值语句--放在创建的实例上+箭头函数-----箭头函数中的this会找外层函数的this（Weathear的实例对象）作为自身this
+        dian = ()=>{
           const ishot = this.state.ishot
           this.setState({ishot:!ishot})
-          console.log(this);
-          console.log('dian');
         }
 
       }

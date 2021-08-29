@@ -290,7 +290,11 @@ const element = <h1>Hello, world!</h1>;
 ```
 ## （2）React实例的三大核心属性
 ### 2.1.state
-- this问题指向问题：this.newdian = this.dian.bind(this)  
+- state是组件对象最重要的属性，值是对象（可以包含多个key-value组合）
+- 组件被称为状态机，通过更新state来更新对应的页面显示（重新渲染组件）
+- this问题指向问题（自定义方法中的this为undefined）：
+    - 解决办法1.this.newdian = this.dian.bind(this)
+    - 解决办法2.所有的自定义方法-----都要用赋值语句+箭头函数的方式书写
 #### 2.1.1.对state的理解
 ```babel
 <script type="text/babel"> //type要写babel
@@ -324,11 +328,14 @@ const element = <h1>Hello, world!</h1>;
 
   }
   //2.渲染组件到页面
+  //const w1 = new Weather()
+  //w1.render()
   ReactDOM.render(<Weather />, document.getElementById('one'))
+  
 
 </script>
 ```
-#### 2.1.1.对state按钮onClick
+#### 2.1.2.对state按钮onClick
 - 类中的方法默认开启了严格模式，所以dian中的this为undefined(dian中的this不再指向window)
 - 要想使用在dian方法中使用this必须在构造器中：重新定义成新的方法newdian挂载在实例对象代替原型对象上的dian方法
 - dian方法中：严重注意：状态(state)不可直接更改,要借助一个内置的API(this.setState())去更改
@@ -338,14 +345,14 @@ const element = <h1>Hello, world!</h1>;
   // 1.创建类式组件
   class Weather extends React.Component {
     constructor(props) {
-      super(props)
+      super(props) //super()操作放在this操作之前 
       this.state = {
         ishot:true
       }
       //把原型对象上的dian方法重新定义成新的方法newdian挂载在实例对象上
       this.newdian = this.dian.bind(this)    
     }
-
+    //render()调用1+n次------1是初始化那次，n是状态更新的次数
     render() {
       //读取状态
       // console.log(this);
@@ -370,4 +377,42 @@ const element = <h1>Hello, world!</h1>;
   ReactDOM.render(<Weather />, document.getElementById('one'))
 
 </script>
+```
+#### 2.1.3.this.setState()进行状态更新（更新是同名替换，不是全部替换）
+- 状态(state)不可直接更改，要借助一个内置的API(setState)去更改
+- this.setState({ishot:!ishot})
+```javascript
+dian() {
+  //严重注意：状态(state)不可直接更改,要借助一个内置的API(setState)去更改
+  // this.state.ishot=false-----直接更改
+  const ishot = this.state.ishot
+  this.setState({ishot:!ishot})
+  console.log(this);
+  console.log('dian');
+}
+
+```
+#### 2.1.4.state的简写
+- 去掉构造器在类中直接使用赋值语句
+- 所有的自定义方法-----都要用赋值语句+箭头函数的方式书写
+```javascript
+class Weather extends React.Component {
+  //直接赋值语句--放在创建的实例上
+  state = {
+    ishot:true
+  }          
+  render() {
+    return <h1 onClick={this.dian}>
+      今天天气很{this.state.ishot ? '炎热' : '凉爽'}
+    </h1>
+  }
+  //直接赋值语句--放在创建的实例上+箭头函数-----箭头函数中的this会找外层函数的this（Weathear的实例对象）作为自身this
+  dian = ()=>{
+    const ishot = this.state.ishot
+    this.setState({ishot:!ishot})
+  }
+
+}
+//2.渲染组件到页面
+ReactDOM.render(<Weather />, document.getElementById('one'))
 ```

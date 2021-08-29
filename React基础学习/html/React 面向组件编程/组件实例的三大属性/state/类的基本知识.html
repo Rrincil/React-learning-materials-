@@ -61,6 +61,15 @@
     console.log(S1);
     S1.speak()//原型方法，原型链查找
     S1.study()
+
+
+    class teacher extends person{
+      //类中可以直接写赋值语句,该赋值语句会直接追加在该类创建的实例上
+      a = 1;
+    }
+    const teacher1 = new teacher();
+    console.log(teacher1);
+ 
   </script>
 </body>
 </html>
