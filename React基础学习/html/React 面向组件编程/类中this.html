@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    class person{
+      //构造器方法
+      constructor(name,age){
+        //构造器中的this是---------类实例对象
+        this.name=name
+        this.age=age
+      }
+      //一般方法
+      speak(){
+        console.log('说');
+      }
+    }
+    //创建一个person的实例对象
+    const p1 = new person('小红',18)
+    const p2 = new person('小绿',22)
+    p1.speak()//通过person实例对象p1调用speak方法
+    //P2()为直接调用------undefined  原因：类中所有定义的方法在局部都开启了严格模式this不指向window
+    const P2 = p2.speak
+    P2()
+
+
+
+
+    function demo(){
+      console.log('demo'+this);
+    }
+    demo()//直接调用-------this指向window
+
+    function demo2(){
+      'use strict'
+      console.log('demo2'+this)
+    }
+    demo2()//开启严格模式--------this不再指向window，this为undefined
+  </script> 
+</body>
+</html>

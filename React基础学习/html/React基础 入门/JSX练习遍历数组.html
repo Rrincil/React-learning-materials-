@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello React</title>
+</head>
+
+<body>
+  <div id="one"></div>
+  <!-- 引入在线CDN注意引入顺序 -->
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <!-- 将jsx转成js -->
+  <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+  <script type="text/babel"> //type要写babel
+
+    const a = ['小红', '小黄', '小绿']
+    // 1.创建虚拟DOM
+    const VDOM = (
+      <div>
+        <h1>一年级学生</h1>,
+        <ul>
+          // 在大括号中可以加表达式
+          {
+            a.map((item, index) => {
+              return <li key='idex'>{item}</li> //每个children标签中必须有一个唯一的key值
+            })
+          }
+        </ul>
+      </div>
+    );
+    // 2.渲染虚拟DOM到页面
+    ReactDOM.render(VDOM, document.getElementById('one'))
+  </script>
+</body>
+
+</html>

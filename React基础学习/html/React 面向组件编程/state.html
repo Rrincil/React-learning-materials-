@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>类式组件</title>
+  </head>
+
+  <body>
+    <div id="one"></div>
+    <!-- 引入在线CDN注意引入顺序 -->
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- 将jsx转成js -->
+    <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+    <script type="text/babel"> //type要写babel
+      // Your ES6 code
+      // 1.创建类式组件
+      class Weather extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {
+            ishot:true
+          }
+          //把原型对象上的dian方法重新定义成新的方法newdian挂载在实例对象上
+          this.newdian = this.dian.bind(this)    
+        }
+
+        render() {
+          //读取状态
+          // console.log(this);
+          return <h1 onClick={this.newdian}>
+            今天天气很{this.state.ishot ? '炎热' : '凉爽'}
+          </h1>
+        }
+        //dian()方法发放在了---------类(Weather)的原型对象上，供实例使用
+        //由于dian作为onClick的回调，所以不是通过实例调用的，是直接调用的
+        //类中的方法默认开启了严格模式，所以dian中的this为undefined
+        dian() {
+          //严重注意：状态(state)不可直接更改,要借助一个内置的API(setState)去更改
+          // this.state.ishot=false-----直接更改
+          const ishot = this.state.ishot
+          this.setState({ishot:!ishot})
+          console.log(this);
+          console.log('dian');
+        }
+
+      }
+      //2.渲染组件到页面
+      ReactDOM.render(<Weather />, document.getElementById('one'))
+
+    </script>
+  </body>
+
+</html>

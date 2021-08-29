@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello React</title>
+</head>
+<body>
+  <div id="one"></div>
+   <!-- 引入在线CDN注意引入顺序 -->
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script> 
+  <!-- 将jsx转成js -->
+  <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script> 
+  <script type="text/babel"> //type要写babel
+  // Your ES6 code
+  // 1.创建虚拟DOM
+  const VDOM = <h1>Hello React</h1>  // 不要写引号，标签语法既不是字符串也不是 HTML。它被称为 JSX，是一个 JavaScript 的语法扩展
+  // 2.渲染虚拟DOM到页面
+  ReactDOM.render(VDOM,document.getElementById('one'))
+  </script>
+</body>
+</html>
