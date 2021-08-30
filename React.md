@@ -289,6 +289,7 @@ const element = <h1>Hello, world!</h1>;
   </script>
 ```
 ## （2）React实例的三大核心属性
+
 ### 2.1.state
 - state是组件对象最重要的属性，值是对象（可以包含多个key-value组合）
 - 组件被称为状态机，通过更新state来更新对应的页面显示（重新渲染组件）
@@ -612,5 +613,184 @@ ReactDOM.render(<Weather />, document.getElementById('one'))
   }    
   //渲染组件到页面
   ReactDOM.render(<Person name='小明' sex='男' age={19}/>,document.getElementById('one'))
+</script>
+```
+### 2.3.refs与事件处理
+- 组件内的标签可以定义ref属性来标识自己
+#### 2.3.1.字符串形式的ref（存在效率问题不推荐使用 ）
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Demo extends React.Component{
+    showdata = ()=>{
+      console.log(this.refs.input1);
+      const {input1} = this.refs
+      alert(input1.value)
+    }
+    showdata2 = ()=>{
+      console.log(this.refs.input2);
+      const {input2} = this.refs
+      alert(input2.value)
+    }      
+    render(){
+      const  {data} = this.props
+      //读取状态
+      return (
+        <div>
+          <input type='text' ref='input1' placeholder='点击按钮提示'/>&nbsp;
+          <button onClick={this.showdata}>提交</button>&nbsp;
+          <input ref={c=>this.input2 = c}  onBlur={this.showdata2} type='text' placeholder='失去焦点提示'/>&nbsp;
+        </div>
+      )
+    }
+  }
+
+  //渲染组件到页面
+  ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
+</script>
+```
+#### 2.3.2.回调函数形式的ref
+##### 2.3.2.1.内联式函数写法（）
+- 内联式函数重新渲染页面时会调用两次ref----第二次更新之前，都做了一个初始化
+- ref={current =>this.input1 = current}
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Demo extends React.Component{
+    showdata = ()=>{
+      console.log(this.input1);
+      const {input1} = this
+      alert(input1.value)
+    }
+    showdata2 = ()=>{
+      console.log(this.input2);
+      const {input2} = this
+      alert(input2.value)
+    }      
+    render(){
+      const  {data} = this.props
+      //读取状态
+      return (
+        <div>
+          <input type='text' ref={currentNode =>this.input1 = currentNode} placeholder='点击按钮提示'/>&nbsp;
+          <button onClick={this.showdata}>提交</button>&nbsp;
+          <input ref={c =>this.input2 = c}  onBlur={this.showdata2} type='text' placeholder='失去焦点提示'/>&nbsp;
+        </div>
+      )
+    }
+  }
+
+  //渲染组件到页面
+  ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
+</script>
+```
+##### 2.3.2.2.定义成class的绑定形式（推荐）
+- 把函数放在实例自身-------ref={this.saveinput}
+- 重新渲染页面不会多次调用ref
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Demo extends React.Component{
+    showdata = ()=>{
+      console.log(this.input1);
+      const {input1} = this
+      alert(input1.value)
+    }
+    showdata2 = ()=>{
+      console.log(this.input2);
+      const {input2} = this
+      alert(input2.value)
+    }      
+    saveinput = (c)=>{
+      this.input1 = c
+    }
+    saveinput2 = (c)=>{
+      this.input2 = c
+    }      
+    render(){
+      const  {data} = this.props
+      //读取状态
+      return (
+        <div>
+          <input type='text' ref={this.saveinput} placeholder='点击按钮提示'/>&nbsp;
+          <button onClick={this.showdata}>提交</button>&nbsp;
+          <input ref={this.saveinput2}  onBlur={this.showdata2} type='text' placeholder='失去焦点提示'/>&nbsp;
+        </div>
+      )
+    }
+  }
+
+  //渲染组件到页面
+  ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
+</script>
+```
+#### 2.3.3.Refs使用 React.createRef() 创建
+- React.createRef()调用后可以返回一个容器，该容器可以存储被ref所标识的节点
+- 该容器被一个节点所专用
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Demo extends React.Component{
+    myRef = React.createRef();  
+    myRef2 = React.createRef();  
+    //展示输入框数据
+    showdata = ()=>{
+      alert(this.myRef.value)
+    }
+    showdata2 = ()=>{
+      alert(this.myRef2.value)
+    }      
+    render(){
+      const  {data} = this.props
+      //读取状态
+      return (
+        <div>
+          <input type='text' ref={this.myRef} placeholder='点击按钮提示'/>&nbsp
+          <button onClick={this.showdata}>提交</button>&nbsp
+          <input ref={this.myRef2}  onBlur={this.showdata2} type='text' placeholder='失去焦点提示'/>
+        </div>
+      )
+    }
+  }
+
+  //渲染组件到页面
+  ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
+</script>
+```
+## （3）React中的事件处理
+### 3.1事件处理
+- 勿过度使用ref----- alert(event.target.value)
+- (1).通过onXxx属性指定事件处理函数如:onClick,onBlur(注意大小写，驼峰)
+      - React使用的是自定义(合成)事件,而不是原生Dom事件---为了更好的兼容性
+      - React中的事件是通过事件委托方式处理的(委托给组件最外层元素)
+- (2).通过event.target得到发生事件的Dom元素对象
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Demo extends React.Component{
+    myRef = React.createRef();  
+    myRef2 = React.createRef();  
+    //展示输入框数据
+    showdata = ()=>{
+      alert(this.myRef.value)
+    }
+    showdata2 = ()=>{
+      alert(event.target.value)
+    }      
+    render(){
+      const  {data} = this.props
+      //读取状态
+      return (
+        <div>
+          <input type='text' ref={this.myRef} placeholder='点击按钮提示'/>&nbsp
+          <button onClick={this.showdata}>提交</button>&nbsp
+          <input ref={this.myRef2}  onBlur={this.showdata2} type='text' placeholder='失去焦点提示'/>
+        </div>
+      )
+    }
+  }
+
+  //渲染组件到页面
+  ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
 </script>
 ```

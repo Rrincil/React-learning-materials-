@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>回调函数形式的ref</title>
+</head>
+<body>
+  <!-- 模板 -->
+  <div id="one"></div>
+  <!-- 引入在线CDN注意引入顺序 -->
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <!-- 引入prop-types 用于对标签属性进行限制-->
+  <script src="https://cdn.bootcdn.net/ajax/libs/prop-types/15.7.2/prop-types.js"></script>
+  <!-- 将jsx转成js -->
+  <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+  <script type="text/babel"> //type要写babel
+    // 创建类式组件
+    class Demo extends React.Component {
+      constructor(props){
+        super(props)
+        showdata = ()=>{
+        console.log(this.input1);
+        const {input1} = this
+        alert(input1.value)
+        }
+        showdata2 = ()=>{
+          console.log(this.input2);
+          const {input2} = this
+          alert(input2.value)
+        }            
+      }  
+      render(){
+        const  {data} = this.props
+        //读取状态
+        return (
+          <div>
+            <input type='text' ref={currentNode =>this.input1 = currentNode} placeholder='点击按钮提示'/>&nbsp;
+            <button onClick={this.showdata}>提交</button>&nbsp;
+            <input ref={c =>this.input2 = c}  onBlur={this.showdata2} type='text' placeholder='失去焦点提示'/>&nbsp;
+          </div>
+        )
+      }
+    }
+
+    //渲染组件到页面
+    ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
+  </script>
+</body>
+</html>
