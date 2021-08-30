@@ -416,3 +416,201 @@ class Weather extends React.Component {
 //2.渲染组件到页面
 ReactDOM.render(<Weather />, document.getElementById('one'))
 ```
+### 2.2.props
+- 传递标签属性
+- props是只读属性
+#### 2.2.1.props的基本使用
+- ...展开运算符---仅适用于标签属性的使用{}----{...a}
+```javascript
+  <!-- 模板 -->
+  <div id="one"></div>
+  <script type="text/babel"> //type要写babel
+    // 创建类式组件
+    class Person extends React.Component{
+
+      render(){
+        const {name,sex,age} = this.props
+        //this.props.age = 10 不能修改props是只读属性
+        //读取状态
+        return (
+          <ul>
+            <li>姓名：{name}</li>
+            <li>性别：{sex}</li>
+            <li>年龄：{age+1}</li> //运算符 
+          </ul>
+        )
+      }
+
+    }const a = {name:'小红',sex:'女',age:18}
+    //渲染组件到页面
+    ReactDOM.render(<Person name='小明' sex='男' age={18} />,document.getElementById('one'))
+    ReactDOM.render(<Person name={a.name} sex={a.sex} age={a.age} />,document.getElementById('one'))
+    //...展开运算符---仅适用于标签属性的使用{}
+    ReactDOM.render(<Person {...a} />,document.getElementById('one'))
+  </script>
+```
+#### 2.2.2.对props限制propType
+- 内置属性PropTypes限制:.string.isRequired,.func
+- Person.defaultProps ----设置默认值
+- 引入PropTypes库使用
+```javascript
+  <!-- 模板 -->
+  <div id="one"></div>
+  <div id="one2"></div>
+  <div id="one3"></div>
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Person extends React.Component{
+
+    render(){
+      const {name,sex,age} = this.props
+      //读取状态
+      return (
+        <ul>
+          <li>姓名：{name}</li>
+          <li>性别：{sex}</li>
+          <li>年龄：{age+1}</li>
+        </ul>
+      )
+    }
+
+  }
+  
+  Person.propTypes = {
+    //内置属性PropTypes
+    name:PropTypes.string.isRequired,
+    sex:PropTypes.string,
+    age:PropTypes.number,
+    speak:PropTypes.func
+  }
+  Person.defaultProps = {
+    sex:'男',
+    age:18
+  }
+  const a = {name:'小红',sex:'女',age:18}
+  //渲染组件到页面
+  ReactDOM.render(<Person name='小明' age={18} speak={dian} />,document.getElementById('one'))
+  ReactDOM.render(<Person name={a.name} sex={a.sex} age={a.age} />,document.getElementById('one2'))
+  //...展开运算符---仅适用于标签属性的使用{}
+  ReactDOM.render(<Person {...a} />,document.getElementById('one3'))
+  
+  function dian(){
+    console.log(this.name+说话了);
+  }
+</script>
+```
+#### 2.2.3.props简写方式
+- 给类加属性---static 属性
+```javascript
+  <script type="text/babel"> //type要写babel
+    // 创建类式组件
+    class Person extends React.Component{
+      static propTypes = {
+      //内置属性PropTypes
+      name:PropTypes.string.isRequired,
+      sex:PropTypes.string,
+      age:PropTypes.number,
+      speak:PropTypes.func
+      }
+      static defaultProps = {
+        sex:'男',
+        age:18
+      }
+      render(){
+        const {name,sex,age} = this.props
+        //读取状态
+        return (
+          <ul>
+            <li>姓名：{name}</li>
+            <li>性别：{sex}</li>
+            <li>年龄：{age+1}</li>
+          </ul>
+        )
+      }
+
+    }
+    
+    const a = {name:'小红',sex:'女',age:18}
+    //渲染组件到页面
+    ReactDOM.render(<Person name='小明' age={18} speak={dian} />,document.getElementById('one'))
+    ReactDOM.render(<Person name={a.name} sex={a.sex} age={a.age} />,document.getElementById('one2'))
+    //...展开运算符---仅适用于标签属性的使用{}
+    ReactDOM.render(<Person {...a} />,document.getElementById('one3'))
+    
+    function dian(){
+      console.log(this.name+说话了);
+    }
+  </script>
+```
+#### 2.2.4.构造器中使用props
+- 构造器是否接收props，是否传递给super，取决于是否希望在构造器中通过this访问props
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Person extends React.Component{
+
+    constructor(props){
+      //构造器是否接收props，是否传递给super，取决于是否希望在构造器中通过this访问props
+      super(props)
+      console.log(this.props);
+    }
+
+    static propTypes = {
+    //内置属性PropTypes
+    name:PropTypes.string.isRequired,
+    sex:PropTypes.string,
+    age:PropTypes.number,
+    speak:PropTypes.func
+    }
+    static defaultProps = {
+      sex:'男',
+      age:18
+    }
+    render(){
+      const {name,sex,age} = this.props
+      //读取状态
+      return (
+        <ul>
+          <li>姓名：{name}</li>
+          <li>性别：{sex}</li>
+          <li>年龄：{age+1}</li>
+        </ul>
+      )
+    }
+
+  }
+  //渲染组件到页面
+  ReactDOM.render(<Person name='小明' />,document.getElementById('one'))
+```
+#### 2.2.5.函数式组件中使用props
+- 传递参数props
+- 解构props对象
+```javascipt
+<script type="text/babel"> //type要写babel
+  // 创建函数式组件
+  function Person(props){
+    const {name,sex,age} = props
+    console.log(props);
+    return (
+      <ul>
+      <li>姓名：{name}</li>
+      <li>性别：{sex}</li>
+      <li>年龄：{age}</li>
+    </ul>        
+    )
+  }
+  Person.propTypes = {
+    //内置属性PropTypes
+    name:PropTypes.string.isRequired,
+    sex:PropTypes.string,
+    age:PropTypes.number,
+    speak:PropTypes.func
+  }
+  Person.defaultProps = {
+    sex:'男',
+    age:18
+  }    
+  //渲染组件到页面
+  ReactDOM.render(<Person name='小明' sex='男' age={19}/>,document.getElementById('one'))
+</script>
+```

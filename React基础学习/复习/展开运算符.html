@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>展开运算符</title>
+</head>
+<body>
+  <script>
+    let a1 = [1,3,5,7]
+    let a2 = [2,4,6,8]
+    console.log(...a1);//把数组展开输出
+    //数组展开重新拼接,连接数组
+    let a3 = [...a1,...a2]
+    console.log(a3);
+    //传递一个数组求和
+    function sum(...numbers) {
+      return numbers.reduce((preValue,currentValue)=>{
+        return preValue+currentValue
+      })
+    }
+    console.log(sum(1,2,3,4));
+    //构造字面量对象时使用展开语法
+    let p = {name:'小花',sex:'女',age:18}
+    console.log(...p);//报错，不能直接展开对象
+    let p2 = {...p}//字面量写法可以展开对象
+    p.name='小绿'
+    console.log(p);
+    console.log(p2);
+   
+    //复制对象时改变属性-----合并
+    let p3 = {...p,name:'小红',address:'china'}
+    console.log(p3);
+
+  </script>
+</body>
+</html>
