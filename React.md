@@ -874,12 +874,15 @@ ReactDOM.render(<Weather />, document.getElementById('one'))
 </script>
 ```
 ## (5)高阶函数-函数柯里化
+### 5.1.使用柯里化操作
+- onChange={this.formdata('username')}
 - 对函数进行精简提炼
 - React中必须把函数作为事件的回调
 - (1).高阶函数：如果一个函数符合下面两个规范中的一个，那么该函数就是高阶函数
-      - 1.若A函数接收的参数是一个函数，那么A就可称为高阶函数
-      - 2.若A函数调用的返回值仍是一个函数，那么A就可称为一个高阶函数
-- (2).函数的柯里化:通过函数调用继续返回函数的方式，实现多次接受参数，最后统一处理的函数编码形式。如下的this.formdata('username')
+    - 1.若A函数接收的参数是一个函数，那么A就可称为高阶函数
+    - 2.若A函数调用的返回值仍是一个函数，那么A就可称为一个高阶函数
+    - 常见的高阶函数：promise，setTimeout,arr.map()
+- (2).函数的柯里化:通过函数调用继续返回函数的方式，实现多次接受参数，最后统一处理的函数编码形式。如下的this.formdata('username')(具体参见复习中的函数柯里化的演示.html)
 ```javascript
 <script type="text/babel"> //type要写babel
   // 创建类式组件
@@ -921,4 +924,26 @@ ReactDOM.render(<Weather />, document.getElementById('one'))
   //渲染组件到页面
   ReactDOM.render(<Login />,document.getElementById('one'))
 </script>
+```
+### 5.1.不使用柯里化操作
+- onChange={event=>this.formdata('username',event)}
+- 对函数进行精简提炼
+- React中必须把函数作为事件的回调
+```javascript
+this.formdata = (typedata,event)=>{
+  this.setState({[typedata]:event.target.value})
+  }
+}
+render(){
+  //读取状态
+  return (
+    <form  onSubmit={this.handlesubmit}>
+      {/*必须把函数作为事件的回调*/}
+      账号：<input onChange={event=>this.formdata('username',event)} type="text" ref={c=>this.username=c} name='username'/>
+      密码：<input type="password" onChange={event=>this.formdata('password',event)} ref={c=>this.password=c} name='password'/>
+      <button>登陆</button>
+      <div>{this.state.username}</div>
+    </form>
+  )
+}
 ```
