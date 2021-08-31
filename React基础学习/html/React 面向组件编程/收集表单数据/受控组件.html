@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>非受控组件的基本使用</title>
+  <title>受控组件的基本使用</title>
 </head>
 <body>
   <!-- 模板 -->
@@ -21,28 +21,43 @@
     class Login extends React.Component{
       constructor(props){
         super(props)
+        this.state = {
+          username:'',
+          password:''
+        }
         this.handlesubmit = (event)=>{
           event.preventDefault();//阻止表单提交
           const {username,password} = this
           alert(username.value)
 
         }  
+        this.demo = (event)=>{
+          this.setState({username :event.target.value})
+          
+        }
+        this.demo2 = (event)=>{
+          this.setState({password :event.target.value})
+          
+        }
       }
-    
+
       render(){
         //读取状态
         return (
+          
           <form  onSubmit={this.handlesubmit}>
-            账号：<input type="text" ref={c=>this.username=c} name='username'/>
-            密码：<input type="password" ref={c=>this.password=c} name='password'/>
+            账号：<input onChange={this.demo} type="text" ref={c=>this.username=c} name='username'/>
+            密码：<input onChange={this.demo2} type="password" ref={c=>this.password=c} name='password'/>
+            
             <button>登陆</button>
+            <div>{this.state.username}</div>
           </form>
 
         )
       }
     }
     //渲染组件到页面
-    ReactDOM.render(<Login/>,document.getElementById('one'))
+    ReactDOM.render(<Login />,document.getElementById('one'))
   </script>
 </body>
 </html>

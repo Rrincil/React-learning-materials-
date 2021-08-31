@@ -18,27 +18,28 @@
     <script type="text/babel"> //type要写babel
       // 1.创建类式组件
       class Weather extends React.Component {
-        // constructor(props) {
-        //   super(props)
-        //   // this.state = {
-        //   //   ishot:true
-        //   // }
-        //   // this.newdian = this.dian.bind(this)    
-        // }
-        //直接赋值语句--放在创建的实例上
-        state = {
-          ishot:true
-        }          
+        constructor(props) {
+          super(props)
+          this.state = {
+            ishot:true
+          }
+          // this.newdian = this.dian.bind(this)    
+          this.dian = ()=>{
+            const ishot = this.state.ishot
+            this.setState({ishot:!ishot})
+          }
+        }
+        // 直接赋值语句--放在创建的实例上
+        // state = {
+        //   ishot:true
+        // }          
         render() {
           return <h1 onClick={this.dian}>
             今天天气很{this.state.ishot ? '炎热' : '凉爽'}
           </h1>
         }
         //直接赋值语句--放在创建的实例上+箭头函数-----箭头函数中的this会找外层函数的this（Weathear的实例对象）作为自身this
-        dian = ()=>{
-          const ishot = this.state.ishot
-          this.setState({ishot:!ishot})
-        }
+
 
       }
       //2.渲染组件到页面

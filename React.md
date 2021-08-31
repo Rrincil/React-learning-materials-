@@ -794,3 +794,131 @@ ReactDOM.render(<Weather />, document.getElementById('one'))
   ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
 </script>
 ```
+## (4)React收集表单数据
+### 4.1.非受控组件的基本使用
+- 现用现取的写法
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Login extends React.Component{
+    constructor(props){
+      super(props)
+      this.handlesubmit = (event)=>{
+        event.preventDefault();//阻止表单提交
+        const {username,password} = this
+        alert(username.value)
+
+      }  
+    }
+  
+    render(){
+      //读取状态
+      return (
+        <form  onSubmit={this.handlesubmit}>
+          账号：<input type="text" ref={c=>this.username=c} name='username'/>
+          密码：<input type="password" ref={c=>this.password=c} name='password'/>
+          <button>登陆</button>
+        </form>
+
+      )
+    }
+  }
+  //渲染组件到页面
+  ReactDOM.render(<Login/>,document.getElementById('one'))
+</script>
+```
+### 4.2.受控组件的基本使用
+- 现用现取的写法
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Login extends React.Component{
+    constructor(props){
+      super(props)
+      this.state = {
+        username:'',
+        password:''
+      }
+      this.handlesubmit = (event)=>{
+        event.preventDefault();//阻止表单提交
+        const {username,password} = this
+        alert(username.value)
+
+      }  
+      this.demo = (event)=>{
+        this.setState({username :event.target.value})
+        
+      }
+      this.demo2 = (event)=>{
+        this.setState({password :event.target.value})
+        
+      }
+    }
+
+    render(){
+      //读取状态
+      return (
+        <form  onSubmit={this.handlesubmit}>
+          账号：<input onChange={this.demo} type="text" ref={c=>this.username=c} name='username'/>
+          密码：<input type="password" ref={c=>this.password=c} name='password'/>
+          <button>登陆</button>
+          //数据双向显示
+          <div>{this.state.username}</div>
+        </form>
+      )
+    }
+  }
+  //渲染组件到页面
+  ReactDOM.render(<Login />,document.getElementById('one'))
+</script>
+</script>
+```
+## (5)高阶函数-函数柯里化
+- 对函数进行精简提炼
+- React中必须把函数作为事件的回调
+- (1).高阶函数：如果一个函数符合下面两个规范中的一个，那么该函数就是高阶函数
+      - 1.若A函数接收的参数是一个函数，那么A就可称为高阶函数
+      - 2.若A函数调用的返回值仍是一个函数，那么A就可称为一个高阶函数
+- (2).函数的柯里化:通过函数调用继续返回函数的方式，实现多次接受参数，最后统一处理的函数编码形式。如下的this.formdata('username')
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建类式组件
+  class Login extends React.Component{
+    constructor(props){
+      super(props)
+      this.state = {
+        username:'',
+        password:''
+      }
+      this.handlesubmit = (event)=>{
+        event.preventDefault();//阻止表单提交
+        const {username,password} = this
+        alert(username.value)
+
+      }  
+      this.formdata = (typedata)=>{
+        return (event)=>{
+          console.log(typedata);
+          this.setState({[typedata]:event.target.value})
+        }
+      }
+    }
+    render(){
+      //读取状态
+      return (
+        <form  onSubmit={this.handlesubmit}>
+           {/*必须把函数作为事件的回调*/}
+          账号：<input onChange={this.formdata('username')} type="text" ref={c=>this.username=c} name='username'/>
+          密码：<input type="password" onChange={this.formdata('password')} ref={c=>this.password=c} name='password'/>
+          
+          <button>登陆</button>
+          <div>{this.state.username}</div>
+        </form>
+
+      )
+    }
+  }
+  //渲染组件到页面
+  ReactDOM.render(<Login />,document.getElementById('one'))
+</script>
+```
