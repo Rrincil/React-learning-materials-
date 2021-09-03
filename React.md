@@ -950,8 +950,11 @@ render(){
 ## (6)组件的生命周期
 - 生命周期<=>生命周期回调函数<=>生命周期钩子函数<=>生命周期钩子
 - [Alt!](React基础学习/img/生命周期函数.png)
-- 挂载：constructor->componentWillMount->ComponentWillUnmount->render->componentDidMount
+- 挂载：constructor->componentWillMount->ComponentWillUnmount->render->componentDidMount(挂载完毕)
 - 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
+- 更新：2.forceUpdate->ComponentWillUpdate->render
+- 更新3.ComponentWillReceiveUpdate（组件即将接收新的参数）->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render  
+- 卸载：ComponentWillUnmount（组件即将被卸载）
 ### 6.1初识组件生命周期
 - 挂载组件(mount)，卸载组件(unmount)
 - 1.初始化之后，状态更新之后-----开始挂载render()
@@ -1007,8 +1010,9 @@ ReactDOM.render(<Life/>,document.getElementById('one'))
 ### 6.2挂载与setState更新
 - 挂载：constructor->componentWillMount->ComponentWillUnmount->render->componentDidMount
 - 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
+- 卸载：ComponentWillUnmount（组件即将被卸载）
 ### 6.3.forceUpdate强制更新（不对state数据做出更改也可更新）
-- 更新：1.forceUpdate->ComponentWillUpdate->render
+- 更新：2.forceUpdate->ComponentWillUpdate->render
 ```javascript
 // 创建类式组件
 class Count extends React.Component{
@@ -1067,6 +1071,7 @@ class Count extends React.Component{
 ReactDOM.render(<Count/>,document.getElementById('one'))
 ```
 ### 6.4.组件将要接收新的（第二次）props
+- 更新3.ComponentWillReceiveUpdate（组件即将接收新的参数）->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
 ```javascript
 <script type="text/babel"> //type要写babel
   // 创建父组件A
