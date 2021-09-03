@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>初识生命周期</title>
+</head>
+<body>
+  <!-- 模板 -->
+  <div id="one"></div>
+  <!-- 引入在线CDN注意引入顺序 -->
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <!-- 引入prop-types 用于对标签属性进行限制-->
+  <script src="https://cdn.bootcdn.net/ajax/libs/prop-types/15.7.2/prop-types.js"></script>
+  <!-- 将jsx转成js -->
+  <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+  <script type="text/babel"> //type要写babel
+    // 创建父组件A
+    class A extends React.Component{
+      //构造器
+      constructor(props){
+        super(props)
+        this.state = {
+          name:'小花'
+        }
+        this.kill = ()=>{
+          ReactDOM.unmountComponentAtNode(document.getElementById('one'))
+        }
+        this.change = ()=>{
+          let name = this.state.name
+          name = '小草'
+          this.setState({name})
+        }
+      }
+      
+      //组件将要更新
+      ComponentWillUpdate(){
+      }      
+      //组件跟新完毕
+      ComponentDidUpdate(){
+      }         
+      //初始化之后，状态更新之后
+      render(){
+        //读取状态
+        return (
+          <div>
+            <div>{this.state.count}</div>      
+            <button onClick={this.change}>改变姓名</button>  
+            <button onClick={this.kill}>卸载组件</button>  
+            {/*传递props参数*/}
+            <B name = {this.state.name}/>    
+          </div>
+        )
+      }
+    }
+
+    //创建子组件B
+    class B extends React.Component{
+      //组件将要接收新的props的钩子---可传递参数props
+      ComponentWillReceiveUpdate(props){
+        console.log(props);
+      }
+      //是否会更新状态，默认返回true----写了该函数必须写返回值，不写该函数则默认为true
+      shouldComponentUpdate(){
+        return true
+      }
+      //组件将要更新
+      ComponentWillUpdate(){
+      }      
+      //组件跟新完毕
+      ComponentDidUpdate(){
+      }               
+      render(){
+        return (
+          <div>
+            我是B组件，我接受的参数是：{this.props.name}
+          </div>
+        )
+      }
+    }
+
+    //渲染A组件到页面
+    ReactDOM.render(<A/>,document.getElementById('one'))
+  </script>
+</body>
+</html>

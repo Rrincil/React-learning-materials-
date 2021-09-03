@@ -1009,7 +1009,6 @@ ReactDOM.render(<Life/>,document.getElementById('one'))
 - 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
 ### 6.3.forceUpdate强制更新（不对state数据做出更改也可更新）
 - 更新：1.forceUpdate->ComponentWillUpdate->render
-### 6.4.Update跟新
 ```javascript
 // 创建类式组件
 class Count extends React.Component{
@@ -1066,4 +1065,74 @@ class Count extends React.Component{
 }
 //渲染组件到页面
 ReactDOM.render(<Count/>,document.getElementById('one'))
+```
+### 6.4.组件将要接收新的（第二次）props
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建父组件A
+  class A extends React.Component{
+    //构造器
+    constructor(props){
+      super(props)
+      this.state = {
+        name:'小花'
+      }
+      this.kill = ()=>{
+        ReactDOM.unmountComponentAtNode(document.getElementById('one'))
+      }
+      this.change = ()=>{
+        let name = this.state.name
+        name = '小草'
+        this.setState({name})
+      }
+    }
+    
+    //组件将要更新
+    ComponentWillUpdate(){
+    }      
+    //组件跟新完毕
+    ComponentDidUpdate(){
+    }         
+    //初始化之后，状态更新之后
+    render(){
+      //读取状态
+      return (
+        <div>
+          <div>{this.state.count}</div>      
+          <button onClick={this.change}>改变姓名</button>  
+          <button onClick={this.kill}>卸载组件</button>  
+          {/*传递props参数*/}
+          <B name = {this.state.name}/>    
+        </div>
+      )
+    }
+  }
+
+  //创建子组件B
+  class B extends React.Component{
+    //组件将要接收新的props的钩子---可传递参数props
+    ComponentWillReceiveUpdate(props){
+      console.log(props);
+    }
+    //是否会更新状态，默认返回true----写了该函数必须写返回值，不写该函数则默认为true
+    shouldComponentUpdate(){
+      return true
+    }
+    //组件将要更新
+    ComponentWillUpdate(){
+    }      
+    //组件跟新完毕
+    ComponentDidUpdate(){
+    }               
+    render(){
+      return (
+        <div>
+          我是B组件，我接受的参数是：{this.props.name}
+        </div>
+      )
+    }
+  }
+
+  //渲染A组件到页面
+  ReactDOM.render(<A/>,document.getElementById('one'))
 ```
