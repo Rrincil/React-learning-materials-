@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>初识生命周期</title>
+</head>
+<body>
+  <!-- 模板 -->
+  <div id="one"></div>
+  <!-- 引入在线CDN注意引入顺序 -->
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <!-- 引入prop-types 用于对标签属性进行限制-->
+  <script src="https://cdn.bootcdn.net/ajax/libs/prop-types/15.7.2/prop-types.js"></script>
+  <!-- 将jsx转成js -->
+  <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+  <script type="text/babel"> //type要写babel
+    // 创建类式组件
+    class Count extends React.Component{
+      //构造器
+      constructor(props){
+        super(props)
+        this.state = {
+          count:0
+        }
+        this.add = () =>{
+          let {count} = this.state
+          count++
+          this.setState({count})
+        }
+        this.kill = ()=>{
+          ReactDOM.unmountComponentAtNode(document.getElementById('one'))
+        }
+      }
+      
+      //组件将要更新
+      ComponentWillUpdate(){
+      }      
+      //组件跟新完毕
+      ComponentDidUpdate(){
+      }         
+      //初始化之后，状态更新之后
+      render(){
+        //读取状态
+        return (
+          <div>
+            <div>{this.state.count}</div>      
+            <button onClick={this.add}>加</button>  
+            <button onClick={this.kill}>卸载组件</button>      
+          </div>
+        )
+      }
+    }
+    //渲染组件到页面
+    ReactDOM.render(<Count/>,document.getElementById('one'))
+  </script>
+</body>
+</html>

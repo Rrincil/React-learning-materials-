@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>初识生命周期</title>
+</head>
+<body>
+  <!-- 模板 -->
+  <div id="one"></div>
+  <!-- 引入在线CDN注意引入顺序 -->
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <!-- 引入prop-types 用于对标签属性进行限制-->
+  <script src="https://cdn.bootcdn.net/ajax/libs/prop-types/15.7.2/prop-types.js"></script>
+  <!-- 将jsx转成js -->
+  <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+  <script type="text/babel"> //type要写babel
+    // 创建类式组件
+    class Life extends React.Component{
+      constructor(props){
+        super(props)
+        this.state = {
+          optic:'从1到0慢，从0到1快',
+          opacity:1,
+        }
+        this.kill = ()=>{
+          //清除定时器
+          clearInterval(this.timer);
+          //卸载组件
+          ReactDOM.unmountComponentAtNode(document.getElementById('one'))
+        }
+      }
+      //组件挂载完毕
+      componentDidMount(){
+        this.timer = setInterval(()=>{
+          let {opacity} = this.state
+          opacity -= 0.1
+          if (opacity<=0) opacity =1
+          //设置透明度
+          this.setState({opacity})
+        },200);
+        }
+      
+      //组件将要被卸载之前
+      ComponentWillUnmount(){
+        //清除定时器
+        clearInterval(this.timer);
+
+      }
+      //初始化之后，状态更新之后
+      render(){
+        //读取状态
+        return (
+          <div>
+            <div style={{opacity:this.state.opacity}}>{this.state.optic}</div>      
+            <button onClick={this.kill}>干掉</button>        
+          </div>
+
+        )
+      }
+    }
+    //渲染组件到页面
+    ReactDOM.render(<Life/>,document.getElementById('one'))
+  </script>
+</body>
+</html>

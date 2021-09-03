@@ -947,3 +947,123 @@ render(){
   )
 }
 ```
+## (6)组件的生命周期
+- 生命周期<=>生命周期回调函数<=>生命周期钩子函数<=>生命周期钩子
+- [Alt!](React基础学习/img/生命周期函数.png)
+- 挂载：constructor->componentWillMount->ComponentWillUnmount->render->componentDidMount
+- 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
+### 6.1初识组件生命周期
+- 挂载组件(mount)，卸载组件(unmount)
+- 1.初始化之后，状态更新之后-----开始挂载render()
+- 2.组件挂载完毕-------componentDidMount()
+- 3.组件将要被卸载之前-----ComponentWillUnmount()
+- 清除定时器------clearInterval()
+```javascript
+class Life extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      optic:'从1到0慢，从0到1快',
+      opacity:1,
+    }
+    this.kill = ()=>{
+      //清除定时器
+      clearInterval(this.timer);
+      //卸载组件
+      ReactDOM.unmountComponentAtNode(document.getElementById('one'))
+    }
+  }
+  //组件挂载完毕
+  componentDidMount(){
+    this.timer = setInterval(()=>{
+      let {opacity} = this.state
+      opacity -= 0.1
+      if (opacity<=0) opacity =1
+      //设置透明度
+      this.setState({opacity})
+    },200);
+    }
+  
+  //组件将要被卸载之前
+  ComponentWillUnmount(){
+    //清除定时器
+    clearInterval(this.timer);
+  }
+  //初始化之后，状态更新之后
+  render(){
+    //读取状态
+    return (
+      <div>
+        <div style={{opacity:this.state.opacity}}>{this.state.optic}</div>      
+        <button onClick={this.kill}>干掉</button>        
+      </div>
+
+    )
+  }
+}
+//渲染组件到页面
+ReactDOM.render(<Life/>,document.getElementById('one'))
+```
+### 6.2挂载与setState更新
+- 挂载：constructor->componentWillMount->ComponentWillUnmount->render->componentDidMount
+- 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
+### 6.3.forceUpdate强制更新（不对state数据做出更改也可更新）
+- 更新：1.forceUpdate->ComponentWillUpdate->render
+### 6.4.Update跟新
+```javascript
+// 创建类式组件
+class Count extends React.Component{
+  //构造器
+  constructor(props){
+    super(props)
+    this.state = {
+      count:0
+    }
+    this.add = () =>{
+      let {count} = this.state
+      count++
+      this.setState({count})
+    }
+    this.kill = ()=>{
+      ReactDOM.unmountComponentAtNode(document.getElementById('one'))
+    }
+    this.force = ()=>{
+
+    }    
+  }
+  //组件将要挂载
+  componentWillMount(){
+  }
+  //组件挂载完毕
+  componentDidMount(){
+  }
+  //组件将要被卸载之前
+  ComponentWillUnmount(){
+  }
+  //是否会更新状态，默认返回true----写了该函数必须写返回值，不写该函数则默认为true
+  shouldComponentUpdate(){
+    return true
+  }
+  //组件将要更新
+  ComponentWillUpdate(){
+  }      
+  //组件跟新完毕
+  ComponentDidUpdate(){
+  }         
+  //初始化之后，状态更新之后
+  render(){
+    //读取状态
+    return (
+      <div>
+        <div>{this.state.count}</div>      
+        <button onClick={this.add}>加</button>  
+        <button onClick={this.kill}>卸载组件</button>   
+        {/*强制更新不对状态进行修改*/}
+        <button onClick={this.force}>强制更新组件</button>  
+      </div>
+    )
+  }
+}
+//渲染组件到页面
+ReactDOM.render(<Count/>,document.getElementById('one'))
+```
