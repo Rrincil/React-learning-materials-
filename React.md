@@ -950,10 +950,10 @@ render(){
 ## (6)组件的生命周期
 - 生命周期<=>生命周期回调函数<=>生命周期钩子函数<=>生命周期钩子
 - [Alt!](React基础学习/img/生命周期函数.png)
-- 挂载：constructor->componentWillMount->ComponentWillUnmount->render->componentDidMount(挂载完毕)
+- 挂载：constructor->componentWillMount->componentDidMount->render->ComponentWillUnmount
 - 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
-- 更新：2.forceUpdate->ComponentWillUpdate->render
-- 更新3.ComponentWillReceiveUpdate（组件即将接收新的参数）->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render  
+- 更新：2.forceUpdate->ComponentWillUpdate->render->componentDidUpdate
+- 更新3.ComponentWillReceiveUpdate（组件即将接收新的参数）->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render->componentDidUpdate
 - 卸载：ComponentWillUnmount（组件即将被卸载）
 ### 6.1初识组件生命周期
 - 挂载组件(mount)，卸载组件(unmount)
@@ -1008,8 +1008,8 @@ class Life extends React.Component{
 ReactDOM.render(<Life/>,document.getElementById('one'))
 ```
 ### 6.2挂载与setState更新
-- 挂载：constructor->componentWillMount->ComponentWillUnmount->render->componentDidMount
-- 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render
+- 挂载：constructor->componentWillMount->componentDidMount->render->ComponentWillUnmount
+- 更新：1.setState->shouldComponentUpdate(是否会更新状态，默认返回true)->ComponentWillUpdate->render->->componentDidUpdate
 - 卸载：ComponentWillUnmount（组件即将被卸载）
 ### 6.3.forceUpdate强制更新（不对state数据做出更改也可更新）
 - 更新：2.forceUpdate->ComponentWillUpdate->render
@@ -1141,3 +1141,124 @@ ReactDOM.render(<Count/>,document.getElementById('one'))
   //渲染A组件到页面
   ReactDOM.render(<A/>,document.getElementById('one'))
 ```
+## (7)组件的生命周期（新）
+- 加UNSAFE_前缀表示在使用这些生命周期代码在未来的react版本中会出现bug,尤其是在使用异步函数时
+- UNSAFE_ComponentWillUpdate()
+- UNSAFE_componentWillMount()
+- UNSAFE_ComponentWillReceiveUpdate
+- 不推荐使用未来会弃用
+- 挂载：constructor->getDerivedStateFromProps->componentDidMount->render->ComponentWillUnmount
+- 更新：ComponentWillReceiveUpdate（组件即将接收新的参数）->getDerivedStateFromProps->shouldComponentUpdate(是否会更新状态，默认返回true)->render->getSnapshotBeforeUpdate->componentDidUpdate
+- 卸载：ComponentWillUnmount（组件即将被卸载）
+### 7.1.getDerivedStateFromProps（从props中获得衍生的状态）
+- 作为静态方法使用，返回状态对象或者null
+- state的值完全取决于props时使用
+- 派生状态会导致代码冗余，组件难以维护
+```javascript
+class Count extends React.Component{
+  //构造器
+  constructor(props){
+    super(props)
+    this.state = {
+      count:0
+    }
+    this.add = () =>{
+      let {count} = this.state
+      count++
+      this.setState({count})
+    }
+    this.kill = ()=>{
+      ReactDOM.unmountComponentAtNode(document.getElementById('one'))
+    }
+    this.force = ()=>{
+
+    }
+  }
+  //从props中获得衍生的状态
+  //作为静态方法使用，返回状态对象或者null
+  static getDerivedStateFromProps(props,state){
+    console.log(props);
+    console.log(state);
+    //return null
+    // return {count:100}
+    return props //把props当状态对象返回
+  }
+  //组件挂载完毕
+  componentDidMount(){
+  }
+  //组件跟新完毕
+  ComponentDidUpdate(){
+  }       
+  //组件将要被卸载之前
+  ComponentWillUnmount(){
+  }        
+  //初始化之后，状态更新之后
+  render(){
+    //读取状态
+    return (
+      <div>
+        <div>{this.state.count}</div>      
+        <button onClick={this.add}>加</button>  
+        <button onClick={this.kill}>卸载组件</button>   
+        {/*强制更新不对状态进行修改*/}
+        <button onClick={this.force}>强制更新组件</button>  
+      </div>
+    )
+  }
+}
+//渲染组件到页面
+ReactDOM.render(<Count count={100}/>,document.getElementById('one'))
+```
+### 7.2.getSnapshotBeforeUpdate
+- 在更新之前获取快照
+- Snapshot(快照)
+- 返回一个快照值(任何值都可作为快照值)(a Snapshot value)或者null
+- 在最近一次渲染输出（提交到 DOM 节点）之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）。此生命周期方法的任何返回值将作为参数传递给 componentDidUpdate()
+```javascript
+//从props中获得衍生的状态
+//作为静态方法使用，返回状态对象或者null
+static getDerivedStateFromProps(props,state){
+  console.log(props);
+  console.log(state);
+  //return null
+  // return {count:100}
+  return props //把props当状态对象返回
+}
+//在最后渲染之前调用
+//返回一个快照值(任何值都可作为快照值)(a Snapshot value)或者null
+getSnapshotBeforeUpdate(){
+  return null
+}
+//组件挂载完毕
+componentDidMount(){
+}
+//组件跟新完毕
+ComponentDidUpdate(){
+}       
+//组件将要被卸载之前------之前的状态值和之前的props值和快照值
+ComponentWillUnmount(preprops,prestate,snapshot){
+  console.log(preprops);
+  console.log(prestate,snapshot);
+}        
+//初始化之后，状态更新之后
+render(){
+  //读取状态
+  return (
+    <div>
+      <div>{this.state.count}</div>      
+      <button onClick={this.add}>加</button>  
+      <button onClick={this.kill}>卸载组件</button>   
+      {/*强制更新不对状态进行修改*/}
+      <button onClick={this.force}>强制更新组件</button>  
+    </div>
+  )
+}
+}
+//渲染组件到页面
+ReactDOM.render(<Count count={100}/>,document.getElementById('one'))
+```
+### 7.3.getSnapshotBeforeUpdate实例
+### 7.4.生命周期常用函数
+- render
+- componentDidMount(挂载完毕)
+- ComponentWillUnmount(卸载之前)

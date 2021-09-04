@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>挂载与setState更新</title>
+  <title>组件将要接收新的props</title>
 </head>
 <body>
   <!-- 模板 -->
@@ -17,41 +17,26 @@
   <!-- 将jsx转成js -->
   <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
   <script type="text/babel"> //type要写babel
-    // 创建类式组件
-    class Count extends React.Component{
+    // 创建父组件A
+    class A extends React.Component{
       //构造器
       constructor(props){
         super(props)
         this.state = {
-          count:0
-        }
-        this.add = () =>{
-          let {count} = this.state
-          count++
-          this.setState({count})
+          name:'小花'
         }
         this.kill = ()=>{
           ReactDOM.unmountComponentAtNode(document.getElementById('one'))
         }
-        this.force = ()=>{
-
+        this.change = ()=>{
+          let name = this.state.name
+          name = '小草'
+          this.setState({name})
         }
       }
-      //组件将要挂载
-      componentWillMount(){
-      }
-      //组件挂载完毕
-      componentDidMount(){
-      }
-      //组件将要被卸载之前
-      ComponentWillUnmount(){
-      }
-      //是否会更新状态，默认返回true----写了该函数必须写返回值，不写该函数则默认为true
-      shouldComponentUpdate(){
-        return true
-      }
+      
       //组件将要更新
-      ComponentWillUpdate(){
+      UNSAFE_ComponentWillUpdate(){
       }      
       //组件跟新完毕
       ComponentDidUpdate(){
@@ -62,16 +47,42 @@
         return (
           <div>
             <div>{this.state.count}</div>      
-            <button onClick={this.add}>加</button>  
-            <button onClick={this.kill}>卸载组件</button>   
-            {/*强制更新不对状态进行修改*/}
-            <button onClick={this.force}>强制更新组件</button>  
+            <button onClick={this.change}>改变姓名</button>  
+            <button onClick={this.kill}>卸载组件</button>  
+            {/*传递props参数*/}
+            <B name = {this.state.name}/>    
           </div>
         )
       }
     }
-    //渲染组件到页面
-    ReactDOM.render(<Count/>,document.getElementById('one'))
+
+    //创建子组件B
+    class B extends React.Component{
+      //组件将要接收新的props的钩子---可传递参数props-------需要加UNSAFE_
+      UNSAFE_ComponentWillReceiveUpdate(props){
+        console.log(props);
+      }
+      //是否会更新状态，默认返回true----写了该函数必须写返回值，不写该函数则默认为true
+      shouldComponentUpdate(){
+        return true
+      }
+      //组件将要更新
+      UNSAFE_ComponentWillUpdate(){
+      }      
+      //组件跟新完毕
+      ComponentDidUpdate(){
+      }               
+      render(){
+        return (
+          <div>
+            我是B组件，我接受的参数是：{this.props.name}
+          </div>
+        )
+      }
+    }
+
+    //渲染A组件到页面
+    ReactDOM.render(<A/>,document.getElementById('one'))
   </script>
 </body>
 </html>
