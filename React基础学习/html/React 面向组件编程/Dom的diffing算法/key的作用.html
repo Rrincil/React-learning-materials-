@@ -32,10 +32,8 @@
           const {student} = this.state
           const s = {id:student.length.id+1,name:'小明',age:25}
           this.setState({student:[s,...student]})
-        }
-        
+        }     
       }
-      
       //组件跟新完毕
       componentDidMount(){
         
@@ -46,19 +44,29 @@
         return (
           <div>
             <ul>
+              <p>使用index作为key</p>
+              {/*把新增的数据放在前方(进行逆序添加)，打乱了索引的顺序，会把所有标签重新渲染，增加input不变导致值发生错乱*/}
               <button onClick={this.add}>增加一个人</button>
               {
-                this.state.student.map((obj,index)=>{
-                  return <li key={index}>{obj.name}---{obj.age}</li>
+                this.state.student.map((obj,index)=>{     
+                  return <li key={index}>{obj.name}---{obj.age} <input type="text"/> </li>
                 })
               }
             </ul> 
+            <hr/>
+            <ul>
+              <p>使用唯一标识id作为key</p>
+              {/*原来有的数据继续复用，减少不必要的渲染，提高效率，增加input不变值也不会错乱*/}
+              {
+                this.state.student.map((obj)=>{     
+                  return <li key={obj.id}>{obj.name}---{obj.age}<input type="text"/> </li>
+                })
+              }
+            </ul>             
           </div>
         )
       }
     }
-
-
     //渲染A组件到页面
     ReactDOM.render(<Person/>,document.getElementById('one'))
   </script>

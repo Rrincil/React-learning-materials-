@@ -1264,6 +1264,42 @@ ReactDOM.render(<Count count={100}/>,document.getElementById('one'))
 - ComponentWillUnmount(卸载之前)-----做一些收尾工作，如清理定时器
 ## (8)Dom的diffing算法
 ### 8.1.验证diffing算法
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建父组件A
+  class Time extends React.Component{
+    //构造器
+    constructor(props){
+      super(props)
+      this.state = {
+        data:new Date()
+      }
+    }
+    //组件跟新完毕
+    componentDidMount(){
+      setInterval(()=>{
+        this.setState({
+          data:new Date()
+        })
+      },1000)
+    }         
+    //初始化之后，状态更新之后
+    render(){
+      //读取状态
+      return (
+        <div>
+          <input type="text"/>
+          <span>
+            现在是：{this.state.data.toTimeString()}   {/*逐层对比，最小力度是标签---这里只会把现在是：{this.state.data.toTimeString()} 重新渲染*/}
+            <input type="text"/>
+          </span>  
+        </div>
+      )
+    }
+  }
+  //渲染A组件到页面
+  ReactDOM.render(<Time/>,document.getElementById('one'))
+```
 ### 8.2.key的作用
 ```javascript
 经典面试问题：
@@ -1273,9 +1309,75 @@ ReactDOM.render(<Count count={100}/>,document.getElementById('one'))
   1.虚拟Dom中的key的作用：
     (1).简单来说key是虚拟Dom对象的标识，在更新显示时起着非常重要的作用
     (2).详细来说：当状态数据发生变化时，react会根据【新数据】生成【新虚拟Dom】 
-        随后react进行【新虚拟Dom】与【旧虚拟Dom】的diff比较，比较规则如下
+        随后react进行【新虚拟Dom】与【旧虚拟Dom】的diff(不同S)比较，比较规则如下
            a.【旧虚拟Dom】找到与【新虚拟Dom】相同的key:
               1.若虚拟Dom内容不变，直接使用之前的真实Dom
               2.若虚拟Dom内容变了，则生成新的【真实Dom】，随后替换掉页面之前的真实Dom
            b.【旧虚拟Dom】未找到与【新虚拟Dom】相同的key:
+              1.根据数据创建新的【真实Dom】，随后渲染到页面
+  2.用index作为key会引发的问题：
+    (1).若对数据进行：逆序添加，逆序删除等破坏顺序操作：
+           会产生没有必要的【真实Dom】更新==>界面效果没问题，但是效率低。
+    (2).如果结构中还包含输入类的Dom（有input输入值会发生值的错乱）:
+           会产生错误的Dom更新==>界面有问题
+    (3).注意！如果不存在对数据进行：逆序添加，逆序删除等破坏顺序操作，
+           仅用于渲染列表的展示，使用index作为key是没有问题的。
+  3.开发中如何选择key？:
+    (1).做好使用每条数据的唯一标识作为key，如id,手机号，身份证号，学号等唯一值。
+    (2).如果只是简单的展示数据，用index也是可以的。
+```
+```javascript
+<script type="text/babel"> //type要写babel
+  // 创建父组件A
+  class Person extends React.Component{
+    //构造器
+    constructor(props){
+      super(props)
+      this.state = {
+        student:[
+          {id:1,name:'小花',age:18},
+          {id:2,name:'小草',age:23}
+        ]
+      }
+      this.add = ()=>{
+        const {student} = this.state
+        const s = {id:student.length.id+1,name:'小明',age:25}
+        this.setState({student:[s,...student]})
+      }     
+    }
+    //组件跟新完毕
+    componentDidMount(){
+      
+    }         
+    //初始化之后，状态更新之后
+    render(){
+      //读取状态
+      return (
+        <div>
+          <ul>
+            <p>使用index作为key</p>
+            {/*把新增的数据放在前方(进行逆序添加)，打乱了索引的顺序，会把所有标签重新渲染，增加input不变导致值发生错乱*/}
+            <button onClick={this.add}>增加一个人</button>
+            {
+              this.state.student.map((obj,index)=>{     
+                return <li key={index}>{obj.name}---{obj.age} <input type="text"/> </li>
+              })
+            }
+          </ul> 
+          <hr/>
+          <ul>
+            <p>使用唯一标识id作为key</p>
+            {/*原来有的数据继续复用，减少不必要的渲染，提高效率，增加input不变值也不会错乱*/}
+            {
+              this.state.student.map((obj)=>{     
+                return <li key={obj.id}>{obj.name}---{obj.age}<input type="text"/> </li>
+              })
+            }
+          </ul>             
+        </div>
+      )
+    }
+  }
+  //渲染A组件到页面
+  ReactDOM.render(<Person/>,document.getElementById('one'))
 ```
