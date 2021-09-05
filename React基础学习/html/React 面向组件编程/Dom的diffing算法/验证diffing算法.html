@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>组件将要接收新的props</title>
+</head>
+<body>
+  <!-- 模板 -->
+  <div id="one"></div>
+  <!-- 引入在线CDN注意引入顺序 -->
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <!-- 引入prop-types 用于对标签属性进行限制-->
+  <script src="https://cdn.bootcdn.net/ajax/libs/prop-types/15.7.2/prop-types.js"></script>
+  <!-- 将jsx转成js -->
+  <script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+  <script type="text/babel"> //type要写babel
+    // 创建父组件A
+    class Time extends React.Component{
+      //构造器
+      constructor(props){
+        super(props)
+        this.state = {
+          data:new Date()
+        }
+        
+      }
+      
+      //组件跟新完毕
+      componentDidMount(){
+        setInterval(()=>{
+          this.setState({
+            data:new Date()
+          })
+        },1000)
+      }         
+      //初始化之后，状态更新之后
+      render(){
+        //读取状态
+        return (
+          <div>
+            <input type="text"/>
+            <span>
+              现在是：{this.state.data.toTimeString()}   {/*逐层对比，最小力度是标签---这里只会把现在是：{this.state.data.toTimeString()} 重新渲染*/}
+              <input type="text"/>
+            </span>  
+          </div>
+        )
+      }
+    }
+
+
+    //渲染A组件到页面
+    ReactDOM.render(<Time/>,document.getElementById('one'))
+  </script>
+</body>
+</html>

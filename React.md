@@ -1259,6 +1259,23 @@ ReactDOM.render(<Count count={100}/>,document.getElementById('one'))
 ```
 ### 7.3.getSnapshotBeforeUpdate实例
 ### 7.4.生命周期常用函数
-- render
-- componentDidMount(挂载完毕)
-- ComponentWillUnmount(卸载之前)
+- render------初始化渲染或者更新渲染调用
+- componentDidMount(挂载完毕)----开启监听，发送ajax请求
+- ComponentWillUnmount(卸载之前)-----做一些收尾工作，如清理定时器
+## (8)Dom的diffing算法
+### 8.1.验证diffing算法
+### 8.2.key的作用
+```javascript
+经典面试问题：
+  1.key的作用（key的内部原理是什么）
+  2.为什么遍历列表时，key最好不用index
+理解：
+  1.虚拟Dom中的key的作用：
+    (1).简单来说key是虚拟Dom对象的标识，在更新显示时起着非常重要的作用
+    (2).详细来说：当状态数据发生变化时，react会根据【新数据】生成【新虚拟Dom】 
+        随后react进行【新虚拟Dom】与【旧虚拟Dom】的diff比较，比较规则如下
+           a.【旧虚拟Dom】找到与【新虚拟Dom】相同的key:
+              1.若虚拟Dom内容不变，直接使用之前的真实Dom
+              2.若虚拟Dom内容变了，则生成新的【真实Dom】，随后替换掉页面之前的真实Dom
+           b.【旧虚拟Dom】未找到与【新虚拟Dom】相同的key:
+```
