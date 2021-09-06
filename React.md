@@ -1381,3 +1381,10 @@ ReactDOM.render(<Count count={100}/>,document.getElementById('one'))
   //渲染A组件到页面
   ReactDOM.render(<Person/>,document.getElementById('one'))
 ```
+# 三.React应用(基于React脚手架)
+- create-react-app创建react应用
+## (1)搭建脚手架 创建项目
+- 1.1全局安装:npm install -g create-react-app
+- 1.2初始化项目：create-react-app 项目名字
+- 1.3启动项目: npm start
+- npm eject 显示webpack配置，并且不可逆
