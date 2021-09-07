@@ -1,10 +1,13 @@
+//引入react核心库
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+// reportWebVitals.js用于记录页面性能
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
+  // 检查是否代码合理
   <React.StrictMode>
     <App />
   </React.StrictMode>,

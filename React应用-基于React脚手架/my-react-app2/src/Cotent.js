@@ -1,24 +1,19 @@
-
-import './App.css';
 //Es6中多种暴露方式 
 import React,{Component} from 'react';
-import Top from './Top.js'
-import Cotent from './Cotent.js'
-class App extends Component{
+class Cotent extends Component{
   constructor(props){
     super(props)
     this.state = {
-      name:'首页'
+      name:'内容'
     }
   }
   render(){
     return (
       <div>
-        <Top/>
-        <Cotent/>
+        {this.state.name}
       </div>
     )
   }
 }
 
-export default App;
+export default Cotent;
