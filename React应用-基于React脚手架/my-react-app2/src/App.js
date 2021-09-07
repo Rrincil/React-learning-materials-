@@ -2,8 +2,8 @@
 import './App.css';
 //Es6中多种暴露方式 
 import React,{Component} from 'react';
-import Top from './Top.js'
-import Cotent from './Cotent.js'
+import Top from './Top/Top'
+import Cotent from './Content/Cotent'
 class App extends Component{
   constructor(props){
     super(props)
