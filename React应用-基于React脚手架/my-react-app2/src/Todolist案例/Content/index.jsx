@@ -1,26 +1,32 @@
 import React, { Component } from 'react'
-
+import './Content.css'
 export default class index extends Component {
-  constructor(props){
-    super(props)
-    // this.myref = React.createRef()
-    this.beizhu = ()=>{
-      // alert(this.myref.value)
-      alert(this.input1.value)
-    }
-    this.delete = ()=>{
-      console.log(1);
-    }
-  }  
+
+  delete = (obj)=>{
+    const {todolist}  = this.props
+    const todolist1 = todolist.splice(obj.id,1)
+    console.log(todolist1)
+    this.props.liuyan1(todolist1)
+  }
   render() { 
+    const {todolist} = this.props
     return (
-      <ul>
+      <ul className='liuyanban'>
         {/* 留言板 */}
         {
-          this.props.todolist.map((obj)=>{
-            return <li key={obj.id}>{obj.name}  <button onClick={this.delete()}>删除</button> </li>
+          todolist.map(obj=>{
+            return(
+              <div key={obj.id} className='liuyan'>
+                <label >
+                  <input type="checkbox" defaultChecked={obj.done}/>
+                  <span>{obj.name}</span>
+                </label>
+                <span className='delete' > <button onClick={this.delete.bind(this,obj)}>删除</button>  </span>             
+              </div>
+            )
           })
         }
+
       </ul>
     )
   }

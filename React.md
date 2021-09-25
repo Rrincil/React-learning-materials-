@@ -1425,3 +1425,6 @@ export default class index extends Component {
   }
 }
 ```
+## (3).组件中函数传值
+- bind关键字，this关键字
+- <button onClick={this.函数名.bind(this,传递的值)}>删除</button>
