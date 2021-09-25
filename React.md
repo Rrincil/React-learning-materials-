@@ -1388,3 +1388,40 @@ ReactDOM.render(<Count count={100}/>,document.getElementById('one'))
 - 1.2初始化项目：create-react-app 项目名字
 - 1.3启动项目: npm start
 - npm eject 显示webpack配置，并且不可逆
+## (2).父子组件间的传值
+- 用state存储在父组件中，用props在父子组件之间传值
+- 父组件传递出去： <Header todolist={this.state.todolist}/>
+- 子组件拿到父组件传递的值：this.props.todolist
+```jsx
+<!-- 父组件 -->
+class index extends Component {
+  state = {todolist:[
+    {id:'01',name:'首页',done:'true'}
+  ]}
+  render() {
+    return (
+      <div className='d1'>
+        <!-- 传递值到子组件 -->
+        <Header todolist={this.state.todolist}/>
+        <Content todolist={this.state.todolist}/>
+        <Footer/>
+      </div>
+    );
+  }
+} 
+<!-- 子组件 -->
+export default class index extends Component {
+  add = ()=>{
+    <!-- 拿到子组件传递的值 -->
+    console.log(this.props.todolist);
+  }
+  render() {
+    return (
+      <div>
+        <input type="text" ref={c=>this.input1=c} />
+        <span><button onClick = {this.add}>留言</button></span>
+      </div>
+    )
+  }
+}
+```

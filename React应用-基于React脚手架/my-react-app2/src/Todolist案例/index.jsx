@@ -10,12 +10,12 @@ class index extends Component {
   render() {
     return (
       <div className='d1'>
-        <Header/>
+        <Header todolist={this.state.todolist}/>
         <Content todolist={this.state.todolist}/>
         <Footer/>
       </div>
     );
   }
-}
+} 
 
 export default index;
