@@ -7,7 +7,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  // 检查是否代码合理
+  // 17.0版本之后增加<React.StrictMode>（jsx写法） 在严格模式下检查是否代码合理
   <React.StrictMode>
     <App />
   </React.StrictMode>,

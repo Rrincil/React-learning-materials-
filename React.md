@@ -644,7 +644,6 @@ ReactDOM.render(<Weather />, document.getElementById('one'))
       )
     }
   }
-
   //渲染组件到页面
   ReactDOM.render(<Demo data='你好'/>,document.getElementById('one'))
 </script>
@@ -796,6 +795,7 @@ ReactDOM.render(<Weather />, document.getElementById('one'))
 ```
 ## (4)React收集表单数据
 ### 4.1.非受控组件的基本使用
+- 非受控（控：即state）组件：表单中的数据，在需要的时候“现用现取”（通过ref获取节点，进而访问value值）
 - 现用现取的写法
 ```javascript
 <script type="text/babel"> //type要写babel
@@ -828,6 +828,7 @@ ReactDOM.render(<Weather />, document.getElementById('one'))
 </script>
 ```
 ### 4.2.受控组件的基本使用
+- 受控组件：表单中输入类的DOM,随着用户的输入，将值收集在state中
 - 现用现取的写法
 ```javascript
 <script type="text/babel"> //type要写babel
@@ -1431,3 +1432,66 @@ export default class index extends Component {
 ## (4).随机id用的库
 - UUID ---npm i uuid  迷你版：nanoid ---npm i nanoid  
 - 使用 nanoid()
+## (5).脚手架文件分析
+- 建议yarn start (yarn react 都是facebook出品)
+- yarn.lock (package.josn)缓存记录包，包版本
+- .eslintcache(语法检查缓存文件)
+### （5.1）src中文件
+```jsx
+//引入react核心库
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+// reportWebVitals.js用于记录页面性能
+import reportWebVitals from './reportWebVitals';
+
+ReactDOM.render(
+  // 17.0版本之后增加<React.StrictMode>（jsx写法） 在严格模式下检查是否代码合理
+  // 开启检查之后，很多不能用，会爆红
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+reportWebVitals();
+```
+- reportWebVitals.js中： web-vitals:进行页面性能分析的包
+- setupTests.js：//用于做单元测试的
+### （5.2）public 中的文件
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- %PUBLIC_URL%代表public文件夹路径 -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <!-- 开启理想视口，用于做移动端的适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 用于配置浏览器页签+地址栏颜色(仅支持安卓手机浏览器) -->
+    <meta name="theme-color" content="#000000" />
+    <!--content中内容 能被网路爬虫抓取的关键词 -->
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <!-- 用于指定网页添加到手机主屏后的图标 -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!-- 应用加壳时的配置文件 manifest.json-->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>React App</title>
+  </head>
+  <body>
+    <!-- 向不支持js的浏览器发出引导 -->
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+
+```
+### 加壳的概念
+- 原生开发（oc,Java）
+- 用前端的语言  编写ios/Andriod应用 经过翻译生成原生应用（ReactNative,uiapp）
+- 加壳（在外层加apk,或者ios，内里还是网页）
+### robots.txt #爬虫协议（规则）文件（规定哪些可以爬取）
