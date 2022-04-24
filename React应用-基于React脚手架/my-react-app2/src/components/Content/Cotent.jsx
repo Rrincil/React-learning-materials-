@@ -1,20 +1,21 @@
 //Es6中多种暴露方式 
 import React,{Component} from 'react';
-import './Top.css'
-class Top extends Component{
+import Todolist from '../Todolist案例';
+class Cotent extends Component{
   constructor(props){
     super(props)
     this.state = {
-      name:'导航'
+      name:'内容'
     }
   }
   render(){
     return (
-      <div id='d1'>
+      <div>
         {this.state.name}
+        <Todolist/>
       </div>
     )
   }
 }
 
-export default Top;
+export default Cotent;

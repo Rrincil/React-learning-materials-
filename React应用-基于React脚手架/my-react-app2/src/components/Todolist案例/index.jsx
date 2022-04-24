@@ -10,7 +10,7 @@ class index extends Component {
   ]}
   //处理header传递过来的数据
   liuyan = (data)=>{
-    console.log(data.value);
+    // console.log(data);
     this.setState({
       todolist:data
     })
@@ -19,10 +19,10 @@ class index extends Component {
     
     return (
       <div className='d1'>
-        <button onClick={this.liuyan}>刷新</button>
+        {/* <button onClick={this.liuyan}>刷新</button> */}
         <Header todolist={this.state.todolist} liuyan1={this.liuyan}/>
         <Content todolist={this.state.todolist} liuyan1={this.liuyan}/>
-        <Footer/>
+        <Footer todolist={this.state.todolist} liuyan1={this.liuyan}/>
       </div>
     );
   }

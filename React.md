@@ -1495,3 +1495,104 @@ reportWebVitals();
 - 用前端的语言  编写ios/Andriod应用 经过翻译生成原生应用（ReactNative,uiapp）
 - 加壳（在外层加apk,或者ios，内里还是网页）
 ### robots.txt #爬虫协议（规则）文件（规定哪些可以爬取）
+## （6）暴露配置并且不可逆--(一般不暴露修改)
+- 命令： yarn eject (npm run ject)
+- 命令 rcc 快速构建react
+## (7)唯一标识id 插件 UUID
+- yarn add uuid
+
+## （8）父子组件，兄弟组件之间传值
+### (8.1)兄弟传值----状态提升
+- 兄弟组件要用的，放在共同的父组件中
+### （8.2）父子传值
+- 父传子   props <son todolist={通过props向子组件传递的值} liuyan1={this.liuyan}/>
+- 子传父   1.父组件先通过props向子组件传递一个函数，2.子组件通过props拿到该函数，再通过该函数向父组件传值
+1. <son liuyan1={父组件的函数}/>---<son liuyan1={this.liuyan}/>
+2. 子组件通过props拿到该函数并向父组件传值---this.props.liuyan1(data)
+```jsx
+class index extends Component {
+  state = {todolist:[
+    {id:'01',name:'吃饭',done:false},
+    {id:'02',name:'睡觉',done:true},
+  ]}
+  //父组件先通过props向子组件传递一个函数
+  liuyan = (data)=>{
+    // console.log(data);
+    //父组件拿到子组件传递的data并且做处理
+    this.setState({
+      todolist:data
+    })
+  }
+  render() {
+    
+    return (
+      <div className='d1'>
+        <Header todolist={this.state.todolist} liuyan1={this.liuyan}/>
+      </div>
+    );
+  }
+} 
+
+
+//子组件通过函数向父组件传值
+export default class index extends Component {
+  delete = (item)=>{
+    console.log(item);
+    const {todolist}  = this.props
+    const todolist1 = todolist.splice(item,1)
+    console.log(todolist1)
+    //子组件通过函数向父组件传值
+    this.props.liuyan1(todolist1)
+  }
+  render() { 
+    return  this.props.todolist.map((obj,index)=>{
+        return(
+          <Item key={obj.id} todolist={obj} delete= {this.delete}/>
+        )
+      })
+    
+  }
+}
+```
+## (9)react脚手架配置跨域问题
+### 9.1什么是跨域问题
+- 在网络请求示：所处位置和目标位置不同源（域）
+### 9.2解决跨域
+#### 方法1 增加代理服务器 （优先匹配前端资源（3000），只能配置一个代理）
+-  客户端3000---》代理服务器3000---》服务器5000
+- 在pack.json中增加
+```js
+    "proxy":"http://localhost:8000"
+```
+- 理解： Ajax发送的请求先获取本地端口资源，若没有则发送至配置的代理服务器，配置的代理服务器也会先找本地端口的
+#### 方法二 配置代理
+- 创建setupProxy.js
+- npm 官网中搜索react-create-app  在github官网中查看react仓库中的usergide 查看官方文档配置
+```js
+const proxy = require('http-proxy-middleware')
+ 
+module.exports = function(app) {
+  app.use(
+    proxy('/api1', {  //api1是需要转发的请求(所有带有/api1前缀的请求都会转发给5000)
+      target: 'http://localhost:8080/api', //配置转发目标地址(能返回数据的服务器地址)
+      changeOrigin: true, //控制服务器接收到的请求头中host字段的值
+      /*
+      	changeOrigin设置为true时，服务器收到的请求头中的host为：localhost:5000
+      	changeOrigin设置为false时，服务器收到的请求头中的host为：localhost:3000
+      	changeOrigin默认值为false，但我们一般将changeOrigin值设为true
+      */
+      pathRewrite: {'^/api': ''} //去除请求前缀，保证交给后台服务器的是正常请求地址(必须配置)
+    }),
+    proxy('/api2', {  //api1是需要转发的请求(所有带有/api1前缀的请求都会转发给5000)
+      target: 'http://localhost:8080/api', //配置转发目标地址(能返回数据的服务器地址)
+      changeOrigin: true, //控制服务器接收到的请求头中host字段的值
+      /*
+      	changeOrigin设置为true时，服务器收到的请求头中的host为：localhost:5000
+      	changeOrigin设置为false时，服务器收到的请求头中的host为：localhost:3000
+      	changeOrigin默认值为false，但我们一般将changeOrigin值设为true
+      */
+      pathRewrite: {'^/api': ''} //去除请求前缀，保证交给后台服务器的是正常请求地址(必须配置)
+    })        
+  )
+}
+```
