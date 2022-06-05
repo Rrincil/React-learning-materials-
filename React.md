@@ -1502,8 +1502,39 @@ reportWebVitals();
 - yarn add uuid
 
 ## （8）父子组件，兄弟组件之间传值
-### (8.1)兄弟传值----状态提升
-- 兄弟组件要用的，放在共同的父组件中
+### (8.1)兄弟传值----状态提升 （消息订阅）
+- (1)兄弟组件要用的，放在共同的父组件中
+- (2)PubsubJs 消息订阅----（可适用于任意组件通信）
+     - 安装yarn add pubsub-js
+     - A组件发布消息  pubsub.publish()
+     - B组件接受消息   pubsub.subscribeOnce('消息名',(接受的数据,名字)=>{})
+     - 取消订阅
+
+```jsx
+-------A组件发布消息  pubsub.publish()
+const pubsub = new PubSub('消息名',发布的数据);
+
+pubsub.publish('user_add', {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'johndoe@gmail.com'
+});
+
+-------B组件接受消息   pubsub.subscribeOnce('消息名',(接受的数据,名字)=>{})
+const pubsub = new PubSub();
+
+const onUserAdd = pubsub.subscribeOnce('user_add', (data, topic) => {
+  console.log('User added');
+  console.log('user data:', data);
+});
+
+-------B 中取消ding'yu
+const pubsub = new PubSub();
+
+// Unsubscribe using the topic's name.
+pubsub.unsubscribe('user_add');
+````
+
 ### （8.2）父子传值
 - 父传子   props <son todolist={通过props向子组件传递的值} liuyan1={this.liuyan}/>
 - 子传父   1.父组件先通过props向子组件传递一个函数，2.子组件通过props拿到该函数，再通过该函数向父组件传值
@@ -1595,4 +1626,34 @@ module.exports = function(app) {
     })        
   )
 }
+```
+## （10）fetch
+- 未优化fetch（未统一处理错误）
+```jsx
+fetch(``).then(res=>{
+  consol.log("联系服务器成功")
+  return res.json()  // 返回一个promise实例 作为.then()promise实例使用 
+                     //如果返回的是一个非promise值 则.then()返回的状态就为成功，值就为这个非promise的值
+},err=>{
+  consol.log("联系服务器失败")
+}
+).then(res=>{
+  consol.log("获取数据成功")
+  consol.log(res)   // 传递的pentch数据
+},err=>{
+  consol.log("获取数据失败")
+})
+```
+- 优化版fetch（统一处理错误.catch()）
+```jsx
+fetch(``).then(res=>{
+  consol.log("联系服务器成功")
+  return res.json()  // 返回一个promise实例 作为.then()promise实例使用 
+                     //如果返回的是一个非promise值 则.then()返回的状态就为成功，值就为这个非promise的值
+}).then(res=>{
+  consol.log("获取数据成功")
+  consol.log(res)   // 传递的pentch数据
+}).catch(err=>{
+  consol.log(err)
+})
 ```
