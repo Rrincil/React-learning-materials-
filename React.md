@@ -1692,13 +1692,7 @@ import { Route } from 'react-router-dom'
 import Home from '../Home'
  <Route path='/Home' component={Home} />
 ```
-### 5.2.2 编程试跳转
-- （1）React中靠路由链接实现切换组件----编写路由链接
-- （2）路由注册
-```jsx
-
-```
-### 5.2.3 路由组件和一般组件的区别
+### 5.2.2 路由组件和一般组件的区别
 - 1.写法不同
   - 一般组件：<Demo>
   - 路由组件：<Route path='/Demo' component={Demo} />
@@ -1708,7 +1702,7 @@ import Home from '../Home'
 - 3.props接收的参数不同
   - 一般组件：{一般组件传递的参数}
   - 路由组件：接收到三个固定属性 History Location Watch
-### 5.2.4 NavLink 的使用
+### 5.2.3 NavLink 的使用
 #### 1. link to跳转
 - React中靠路由链接实现切换组件----编写路由链接
 - NavLink给a 标签增加一个 active 样式类名（<Link active to='/Home'> Home</Link>）
@@ -1732,7 +1726,7 @@ import { Link } from 'react-router-dom'
 </body>
 
 ```
-### 5.2.5 关于Mynavlink 的封装
+### 5.2.4 关于Mynavlink 的封装
 - 用一般组件来封装自定义属性的NavLink
 - 标签体中的内容即是 标签属性childern(通过this.props.children可以获取标签体中的内容)
 ```jsx
@@ -1752,7 +1746,7 @@ export default class index extends Component {
 ```js
 <Mynavlink to='/home'>Home</Mynavlink>
 ```
-### 5.2.6 Switch 组件的使用
+### 5.2.5 Switch 组件的使用
 - 一个路径对应一个组件
 ```jsx
 - （2）路由注册
@@ -1764,10 +1758,10 @@ import Home from '../Home'
  </Switch>
 
 ```
-### 5.2.7 二级路径找不到样式问题
+### 5.2.6 二级路径找不到样式问题
 - 写绝对路径 %PUBLIC_URL%/css/
 - 改为Hash路由 #后面的属于前端资源不带给服务器
-### 5.2.8 路由的模糊匹配和精准匹配
+### 5.2.7 路由的模糊匹配和精准匹配
 - 模糊匹配--前缀匹配 -- 匹配前一个匹配上再往上走了
 ```jsx
 <NavLink to='/Home/a/b'>
@@ -1780,12 +1774,12 @@ import Home from '../Home'
 ```jsx
   <Route exact={true} path='/Home' component={Home} />
 ```
-### 5.2.9 路由重定向
+### 5.2.8 路由重定向
 ```jsx
   <Route exact={true} path='/Home' component={Home} />
   <Redirect to='/home'/>
 ```
-### 5.2.10 嵌套路由
+### 5.2.9 嵌套路由
 - 一级二级路由不要丢
 ```jsx
 <NavLink to='/Home/a/b'>
@@ -1794,7 +1788,7 @@ import Home from '../Home'
 // Home下a下的b
   <Route path='/Home/a/b' component={Home} />
 ```
-### 5.2.11 路由传参之传递params参数
+### 5.2.10 路由传参之传递params参数
 - 1.在路径中传递参数
 - 2.在注册路由是申明接收
 - 3.在props.match中接收参数---this.props.match.params
@@ -1816,12 +1810,12 @@ export default class index extends Component {
         {
           a.map(item=>{
             // 传递params参数
-            <Link to={`/Home${item.id}`} ></Link>
+            <Link to={`/Home/${item.id}`} ></Link>
           })
         }
         {/*注册组件 展示组件*/}
         {/* 接收参数id :id */}
-        <Route path='/home:id' component={home}/>
+        <Route path='/home/:id' component={home}/>
       </div>
     )
   }
@@ -1845,7 +1839,7 @@ export default class index extends Component {
   }
 }
 ```
-### 5.2.12 路由传参之传递search参数
+### 5.2.11 路由传参之传递search参数
 - 1.传递search参数 （类似query参数）
 - 2.this.props.location.search接收参数，但是参数是query类型，需要用到一个React中querystring
 下载（npm install query-string ）引入（import qs from 'querystring'）使用（qs.stringfy(x).slice(1)）
@@ -1897,7 +1891,7 @@ export default class index extends Component {
   }
 }
 ```
-### 5.2.13 路由传参之传递state参数(地址栏参数不可见)
+### 5.2.12 路由传参之传递state参数(地址栏参数不可见)
 - 1.传递state参数 （传递为一个对象类型）{对象}对象中pathname为路径，state为传递的参数
 - 2.接收state参数 const {id} = this.props.location.state
 - 注意 <span style="color:red">加一个||{}防止浏览器清除缓存时在undifined上取值报错</span>
@@ -1947,4 +1941,130 @@ export default class index extends Component {
     )
   }
 }
+```
+## 5.3 浏览器的路由跳转的两种模式
+- 1.push 模式 方式为栈
+- 2.replace模式 方式为栈(栈顶模式，不留痕迹)
+```jsx
+//  <Link replace={true} to={{pathname:'/home',state:{id:item.id,name:item.name}}} ></Link>
+  <Link replace to={{pathname:'/home',state:{id:item.id,name:item.name}}} ></Link>
+```
+## 5.4 编程式路由跳转
+- （1）this.props.history.push(path,state)
+- （2）this.props.history.replace(path,state)
+-  (3) 路由前进 this.props.history.goForward()
+-  (4) 路由后退 this.props.history.goBack()
+-  (5) 路由前进后退步数 this.props.history.go(n) (n为正整数为前进的步数,n为负整数为后退的步数)
+```jsx
+import React, { Component } from 'react'
+import {Link,Route} from 'react-router-dom'
+import qs from 'querystring'
+export default class index extends Component {
+  state=()=>{
+    a:[
+      {id:0,name:hello1},
+      {id:0,name:hello1},
+      {id:0,name:hello1}
+    ]
+  }
+  replaceto = (id,name)=>{
+    // 传递params参数
+    this.props.history.replace(`/home/${id}/${name}`)
+    // 传递search参数
+    this.props.history.replace(`/home/?id=${id}$name=${name}`)
+  }
+  pushto = (id,name)=>{
+    // 传递params参数
+    this.props.history.push(`/home/${id}/${name}`)
+    // 传递search参数
+    this.props.history.replace(`/home/?id=${id}&name=${name}`)    
+  }
+  stateto = (id,name)=>{
+    // 传递state参数
+    this.props.history.push(`/home`,{id,name})
+  }
+  foward =()=>{
+    this.props.history.goForward()
+  }
+  back =()=>{
+    this.props.history.goBack()
+  }
+  go = (n)=>{
+    // 前进n步
+    this.props.history.go(n)
+    // 后退n步
+    this.props.history.go(-n)    
+  }
+  render() {
+    const {a} = this.state;
+    return (
+      <div>
+        {
+          a.map(item=>{
+            // 传递state参数{对象}---js表达式中包含对象
+            <Link to={{pathname:'/home',state:{id:item.id,name:item.name}}} ></Link>
+            <button onClick={()=>{this.replaceto(item.id,item.name)}}>replace传参</button>
+            <button onClick={()=>{this.pushto(item.id,item.name)}}>push传参</button>
+            <button onClick={()=>{this.stateto(item.id,item.name)}}>state传参</button>
+          })
+        }
+        {/*注册组件 展示组件*/}
+        {/*注册params 参数*/}
+         <Route path='/home/:id/:name'>
+        {/*search参数无需接收参数，正常注册路由*/}    
+        {/* state参数无需接收参数，正常注册路由*/}
+        <Route path='/home' component={home}/>
+
+        {/*路由 前进后退*/}
+        <button onClick={this.foward}>前进</button>
+        <button onClick={this.back}>后退</button>
+        <button onClick={()=>{this.go(n)}}>步数</button>
+      </div>
+    )
+  }
+}
+
+// Home组件中
+import React, { Component } from 'react'
+import {NavLink} from 'react-router-dom'
+import qs from 'querystring'
+export default class index extends Component {
+  render() {
+    // 接收params参数
+    const {id} = this.props.match.params
+    // 接收search参数
+    const {id} = qs.stringfy(this.props.location.search).slice(1)      
+    // 接收state参数 加一个||{}防止浏览器清除缓存时在undifined上取值报错
+    const {id} = this.props.location.state||{}
+    return (
+      <ul>
+      {        
+        <li>{id}</li>
+      }
+      </ul>
+    )
+  }
+}
+```
+
+
+## 5.5 一般组件使用路由组件的API (withRouter函数)
+- withRouter的返回值是一个新组建
+```jsx
+import React, { Component } from 'react'
+import {withRouter} from 'react-router-dom'
+class home extends Component {
+  render() {
+    // 接收search参数
+    const {id} = qs.stringfy(this.props.location.search).slice(1)
+    return (
+      <ul>
+      {        
+        <li>{id}</li>
+      }
+      </ul>
+    )
+  }
+}
+export default withRouter(home)
 ```
