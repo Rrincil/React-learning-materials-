@@ -1533,8 +1533,7 @@ const pubsub = new PubSub();
 
 // Unsubscribe using the topic's name.
 pubsub.unsubscribe('user_add');
-````
-
+```
 ### （8.2）父子传值
 - 父传子   props <son todolist={通过props向子组件传递的值} liuyan1={this.liuyan}/>
 - 子传父   1.父组件先通过props向子组件传递一个函数，2.子组件通过props拿到该函数，再通过该函数向父组件传值
@@ -1585,18 +1584,19 @@ export default class index extends Component {
   }
 }
 ```
-## (9)react脚手架配置跨域问题
-### 9.1什么是跨域问题
+# 四、React ajax(fetch)
+## 4.1 react脚手架配置跨域问题
+### 4.1.1 什么是跨域问题
 - 在网络请求示：所处位置和目标位置不同源（域）
-### 9.2解决跨域
-#### 方法1 增加代理服务器 （优先匹配前端资源（3000），只能配置一个代理）
+### 4.1.2 解决跨域
+#### (1)方法1 增加代理服务器 （优先匹配前端资源（3000），只能配置一个代理）
 -  客户端3000---》代理服务器3000---》服务器5000
 - 在pack.json中增加
 ```js
     "proxy":"http://localhost:8000"
 ```
 - 理解： Ajax发送的请求先获取本地端口资源，若没有则发送至配置的代理服务器，配置的代理服务器也会先找本地端口的
-#### 方法二 配置代理
+#### (2)方法二 配置代理
 - 创建setupProxy.js
 - npm 官网中搜索react-create-app  在github官网中查看react仓库中的usergide 查看官方文档配置
 ```js
@@ -1627,7 +1627,7 @@ module.exports = function(app) {
   )
 }
 ```
-## （10）fetch
+## 4.2 fetch
 - 未优化fetch（未统一处理错误）
 ```jsx
 fetch(``).then(res=>{
@@ -1656,4 +1656,295 @@ fetch(``).then(res=>{
 }).catch(err=>{
   consol.log(err)
 })
+```
+# 五、React路由
+## 5.1 路由理解
+- 原理：监听BOM中history记录 栈的结构
+### 5.1.1 SPA的理解
+- 单页面web应用（single page web application SPA）
+- 整个页面只有一个完整的页面
+- 点击页面链接不会刷新页面，只会做页面的局部更新
+- 数据都需要通过ajax请求，在前端页面展现
+```jsx
+```
+## 5.2 react-router-dom  第5版本使用
+- yarn add react-router-dom@5
+### 5.2.1基本使用
+#### 1. 创建引入路由
+```jsx
+import { BrowserRouter } from 'react-router-dom';
+< BrowserRouter>
+  <App />
+</BrowserRouter>
+```
+#### 2. link to跳转
+- （1）React中靠路由链接实现切换组件----编写路由链接
+- Link渲染成a 标签
+```jsx
+import { Link } from 'react-router-dom'
+<Link to='/Home'>
+  Home
+</Link>
+```
+#### 3. 路由注册
+```jsx
+import { Route } from 'react-router-dom'
+import Home from '../Home'
+ <Route path='/Home' component={Home} />
+```
+### 5.2.2 编程试跳转
+- （1）React中靠路由链接实现切换组件----编写路由链接
+- （2）路由注册
+```jsx
+
+```
+### 5.2.3 路由组件和一般组件的区别
+- 1.写法不同
+  - 一般组件：<Demo>
+  - 路由组件：<Route path='/Demo' component={Demo} />
+- 2.存放为止
+  - 一般组件：components
+  - 路由组件：pages
+- 3.props接收的参数不同
+  - 一般组件：{一般组件传递的参数}
+  - 路由组件：接收到三个固定属性 History Location Watch
+### 5.2.4 NavLink 的使用
+#### 1. link to跳转
+- React中靠路由链接实现切换组件----编写路由链接
+- NavLink给a 标签增加一个 active 样式类名（<Link active to='/Home'> Home</Link>）
+```jsx
+import { Link } from 'react-router-dom'
+<NavLink to='/Home'>
+  Home
+</NavLink>
+```
+- 自己设置样式
+```html
+<style>
+  .demo{
+    backgroud-color:red !important;
+  }
+</style>
+<body>
+  <NavLink activeclassName='demo' to='/Home'>
+  Home
+</NavLink>
+</body>
+
+```
+### 5.2.5 关于Mynavlink 的封装
+- 用一般组件来封装自定义属性的NavLink
+- 标签体中的内容即是 标签属性childern(通过this.props.children可以获取标签体中的内容)
+```jsx
+import React, { Component } from 'react'
+import {NavLink} from 'react-router-dom'
+export default class index extends Component {
+  render() {
+    return (
+      // 封装自定义样式的 NavLink
+      <NavLink activeclassName='demo' {...this.props}/>
+    )
+  }
+}
+
+```
+- 使用自定义属性的NavLink
+```js
+<Mynavlink to='/home'>Home</Mynavlink>
+```
+### 5.2.6 Switch 组件的使用
+- 一个路径对应一个组件
+```jsx
+- （2）路由注册
+import { Route } from 'react-router-dom'
+import Home from '../Home'
+ <Switch>
+  <Route path='/Home' component={Home} />
+  <Route path='/Home' component={Ha} /> //使用Switch之后不再执行
+ </Switch>
+
+```
+### 5.2.7 二级路径找不到样式问题
+- 写绝对路径 %PUBLIC_URL%/css/
+- 改为Hash路由 #后面的属于前端资源不带给服务器
+### 5.2.8 路由的模糊匹配和精准匹配
+- 模糊匹配--前缀匹配 -- 匹配前一个匹配上再往上走了
+```jsx
+<NavLink to='/Home/a/b'>
+  Home
+</NavLink>
+  <Route path='/Home' component={Home} />
+  <Route path='/Home' component={Ha} /> //使用Switch之后不再执行
+```
+- 精准匹配--exact={true}
+```jsx
+  <Route exact={true} path='/Home' component={Home} />
+```
+### 5.2.9 路由重定向
+```jsx
+  <Route exact={true} path='/Home' component={Home} />
+  <Redirect to='/home'/>
+```
+### 5.2.10 嵌套路由
+- 一级二级路由不要丢
+```jsx
+<NavLink to='/Home/a/b'>
+  Home
+</NavLink>
+// Home下a下的b
+  <Route path='/Home/a/b' component={Home} />
+```
+### 5.2.11 路由传参之传递params参数
+- 1.在路径中传递参数
+- 2.在注册路由是申明接收
+- 3.在props.match中接收参数---this.props.match.params
+```jsx
+import React, { Component } from 'react'
+import {Link,Route} from 'react-router-dom'
+export default class index extends Component {
+  state=()=>{
+    a:[
+      {id:0,name:hello1},
+      {id:0,name:hello1},
+      {id:0,name:hello1}
+    ]
+  }
+  render() {
+    const {a} = this.state;
+    return (
+      <div>
+        {
+          a.map(item=>{
+            // 传递params参数
+            <Link to={`/Home${item.id}`} ></Link>
+          })
+        }
+        {/*注册组件 展示组件*/}
+        {/* 接收参数id :id */}
+        <Route path='/home:id' component={home}/>
+      </div>
+    )
+  }
+}
+
+
+// Home组件中
+import React, { Component } from 'react'
+import {NavLink} from 'react-router-dom'
+export default class index extends Component {
+  render() {
+    // 接收参数
+    const {id} = this.props.match.params
+    return (
+      <ul>
+      {        
+        <li>{id}</li>
+      }
+      </ul>
+    )
+  }
+}
+```
+### 5.2.12 路由传参之传递search参数
+- 1.传递search参数 （类似query参数）
+- 2.this.props.location.search接收参数，但是参数是query类型，需要用到一个React中querystring
+下载（npm install query-string ）引入（import qs from 'querystring'）使用（qs.stringfy(x).slice(1)）
+```jsx
+import React, { Component } from 'react'
+import {Link,Route} from 'react-router-dom'
+export default class index extends Component {
+  state=()=>{
+    a:[
+      {id:0,name:hello1},
+      {id:0,name:hello1},
+      {id:0,name:hello1}
+    ]
+  }
+  render() {
+    const {a} = this.state;
+    return (
+      <div>
+        {
+          a.map(item=>{
+            // 传递search参数
+            <Link to={`/Home/?id=${item.id}&name=${item.name}`} ></Link>
+          })
+        }
+        {/*注册组件 展示组件*/}
+        {/* 无需接收参数，正常注册路由*/}
+        <Route path='/home' component={home}/>
+      </div>
+    )
+  }
+}
+
+
+// Home组件中
+import React, { Component } from 'react'
+import {NavLink} from 'react-router-dom'
+import qs from 'querystring'
+export default class index extends Component {
+  render() {
+    // 接收search参数
+    const {id} = qs.stringfy(this.props.location.search).slice(1)
+    return (
+      <ul>
+      {        
+        <li>{id}</li>
+      }
+      </ul>
+    )
+  }
+}
+```
+### 5.2.13 路由传参之传递state参数(地址栏参数不可见)
+- 1.传递state参数 （传递为一个对象类型）{对象}对象中pathname为路径，state为传递的参数
+- 2.接收state参数 const {id} = this.props.location.state
+- 注意 <span style="color:red">加一个||{}防止浏览器清除缓存时在undifined上取值报错</span>
+```jsx
+import React, { Component } from 'react'
+import {Link,Route} from 'react-router-dom'
+export default class index extends Component {
+  state=()=>{
+    a:[
+      {id:0,name:hello1},
+      {id:0,name:hello1},
+      {id:0,name:hello1}
+    ]
+  }
+  render() {
+    const {a} = this.state;
+    return (
+      <div>
+        {
+          a.map(item=>{
+            // 传递state参数{对象}---js表达式中包含对象
+            <Link to={{pathname:'/home',state:{id:item.id,name:item.name}}} ></Link>
+          })
+        }
+        {/*注册组件 展示组件*/}
+        {/* state参数无需接收参数，正常注册路由*/}
+        <Route path='/home' component={home}/>
+      </div>
+    )
+  }
+}
+
+// Home组件中
+import React, { Component } from 'react'
+import {NavLink} from 'react-router-dom'
+import qs from 'querystring'
+export default class index extends Component {
+  render() {
+    // 接收state参数 加一个||{}防止浏览器清除缓存时在undifined上取值报错
+    const {id} = this.props.location.state||{}
+    return (
+      <ul>
+      {        
+        <li>{id}</li>
+      }
+      </ul>
+    )
+  }
+}
 ```
