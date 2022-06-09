@@ -2100,7 +2100,7 @@ export default withRouter(home)
   }
 
 ```
-### 5.3.2 新增的Navigate使用
+### 5.3.2 新增的Navigate使用(重定向)
 - 只要渲染就会引起重定向 默认push模式浏览器会留下痕迹， 
 ```jsx
 <Routes>
@@ -2162,4 +2162,175 @@ export default App;
     )
   }
 ```
+### 5.3.4 函数式组件Link 跳转传值（借助Hook钩子）
+#### 5.3.4.1 params传值
+- 在函数式组件中接收params参数（const {id} = useParams()）或者用useMatch(完整路径加参数).parms
+```jsx
+//传递参数
+{/* params传值 */}
+ <Link to={`study/${id}`}>Study</Link>
 
+//注册路由
+const routes = [
+  {
+    path:'/',
+    element:<Navigate to="/home"/>
+  },
+  {
+    path:'/home',
+    element: <Home/>,
+    children:[
+      {
+        // 接收params参数
+        path:'study/:id',
+        element:<Study/>
+      }
+    ]
+  },
+]
+export default routes
+
+// 在study.jsx中接收params参数
+import { useParams } from 'react-router-dom'
+export default function Index() {
+  const {id} = useParams()
+  // const {id} = useMatch('/home/study/:id').params
+  return (
+    <div>study
+      {id}
+    </div>
+  )
+}
+```
+#### 5.3.4.2 search参数传值
+-  const [接收的参数,更新参数] = useSearchParams() (或者使用useLacation钩子)
+- const [search,setsearch] = useSearchParams() 
+- 接收参数search.get('id')
+- 更新参数setsearch('id="我变了"')
+```jsx
+//传递参数
+{/* search传值 */}
+  <Link to={`study/?id=${id}`}>Study</Link>
+
+//注册路由
+const routes = [
+  {
+    path:'/',
+    element:<Navigate to="/home"/>
+  },
+  {
+    path:'/home',
+    element: <Home/>,
+    children:[
+      {
+        // 不用接收Sreach参数
+        path:'study',
+        element:<Study/>
+      }
+    ]
+  },
+]
+import React from 'react'
+import qs from 'querystring'
+import {useSearchParams,useLocation} from 'react-router-dom'
+export default function Index() {
+  const [search,setsearch] = useSearchParams()
+  const id = search.get('id');
+  const {id} = qs.stringfy(this.props.location.search).slice(1)
+  return (
+    <div>
+      <button onClick={()=>setsearch('id="我变了"')}>改变Search参数</button>
+      study
+      {id}
+    </div>
+  )
+}
+
+```
+#### 5.3.4.3 state参数传值
+- 使用useLacation钩子
+- const {state:{id}} = useLocation();
+```jsx
+//传递参数
+{/* state传值 */}
+<Link 
+  to='study' 
+  state={{
+    id:id
+  }}>Study</Link>
+
+//注册路由
+const routes = [
+  {
+    path:'/',
+    element:<Navigate to="/home"/>
+  },
+  {
+    path:'/home',
+    element: <Home/>,
+    children:[
+      {
+        // 不用接收state参数
+        path:'study',
+        element:<Study/>
+      }
+    ]
+  },
+]
+
+import React from 'react'
+import { useLocation} from 'react-router-dom'
+export default function Index() {
+  // 连续解构
+  const {state:{id}} = useLocation();
+  return (
+    <div>
+      study
+      {id}
+    </div>
+  )
+}
+
+
+```
+### 5.3.5 函数式组件编程式路由跳转(useNavigate)
+- const naviage = useNavigate()
+- navigate('路径',{
+  replace:false, //默认为false
+  state:{
+    id:"我是传递的参数"
+  }
+})
+- navigate(n) 前进或者后退
+```jsx
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+export default function index() {
+  const navigate = useNavigate()
+  function topath(){
+    navigate('/home',{
+      replace:false,
+      state:{
+        id:'你好'
+      }
+    })
+  }
+  return (
+    <div>
+      <button onClick={topath}>点击回首页</button>
+    </div>
+  )
+}
+```
+### 5.3.6 判断是否在路由上下文中
+- useInRouterContext
+### 5.3.7 查询路由方式
+- useNavigationType 返回值（pop ,push,replace）
+- pop 指在浏览器中直接打开了这个组件（刷新页面）
+### 5.3.9 呈现当前组件中渲染的嵌套路由
+- consol.log(useOutlet())
+- 如果嵌套路由未挂载---输出null
+- 如果嵌套路由挂载---输出嵌套路由对象
+### 5.3.10 解析路径
+- useResolvedPath('/home?id=1121&name=ksk#que')
+- 给定一个URL值，解析其中path,search,hash值
