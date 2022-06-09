@@ -1942,14 +1942,14 @@ export default class index extends Component {
   }
 }
 ```
-## 5.3 浏览器的路由跳转的两种模式
+### 5.2.13 浏览器的路由跳转的两种模式
 - 1.push 模式 方式为栈
 - 2.replace模式 方式为栈(栈顶模式，不留痕迹)
 ```jsx
 //  <Link replace={true} to={{pathname:'/home',state:{id:item.id,name:item.name}}} ></Link>
   <Link replace to={{pathname:'/home',state:{id:item.id,name:item.name}}} ></Link>
 ```
-## 5.4 编程式路由跳转
+### 5.2.14 编程式路由跳转
 - （1）this.props.history.push(path,state)
 - （2）this.props.history.replace(path,state)
 -  (3) 路由前进 this.props.history.goForward()
@@ -2025,6 +2025,7 @@ export default class index extends Component {
 }
 
 // Home组件中
+
 import React, { Component } from 'react'
 import {NavLink} from 'react-router-dom'
 import qs from 'querystring'
@@ -2048,7 +2049,7 @@ export default class index extends Component {
 ```
 
 
-## 5.5 一般组件使用路由组件的API (withRouter函数)
+### 5.2.15 一般组件使用路由组件的API (withRouter函数)
 - withRouter的返回值是一个新组建
 ```jsx
 import React, { Component } from 'react'
@@ -2068,3 +2069,97 @@ class home extends Component {
 }
 export default withRouter(home)
 ```
+## 5.3 react-router-dom  第6版本使用
+- 与5相比改变了
+  - 1.内置组件的变化：移除<Switch> ,新增<Routes>（必须使用）等。
+  - 2.语法变化： component={About} 变为element={<About/>}等
+  - 3.新增多个hook:useParams useNavigate useMatch 等
+  - 4.官网推荐函数式组件
+```jsx
+
+```
+### 5.3.1 新增的Routes必须包裹使用
+- 移除了5的Switch,用Routes代替
+- Routes 和Route要配合使用，使用Route必须被Routes包裹
+- <Route caseSensitive>属性默认用于指定，匹配时不区分大小写。
+```jsx
+  render() {
+    return ( 
+      <div className='body'>
+        <div className="container">
+          <div className="row">
+             <Routes>
+              <Route path='/home' element={<Home/>} />
+            </Routes> 
+            // 路由注册
+            {/*<Outlet/>*/}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+```
+### 5.3.2 新增的Navigate使用
+- 只要渲染就会引起重定向 默认push模式浏览器会留下痕迹， 
+```jsx
+<Routes>
+  <Route path='/home' element={<Home/>} />
+  // 重定向的使用
+  <Route path='/' element={<Navigate to='home'/>} />
+</Routes> 
+
+```
+### 5.3.3 路由表使用
+- 只要渲染就会引起重定向 默认push模式浏览器会留下痕迹， 
+```jsx
+// router.js
+import {Navigate } from "react-router-dom";
+import Home from '../components/body/Home'
+const routes = [
+  {
+    path:'/home',
+    element: <Home/>
+  },
+  {
+    path:'/',
+    element:<Navigate to="/"/>
+  }
+]
+export default routes
+
+//APP.js使用 
+import { useRoutes } from 'react-router-dom';
+import routes from './routes'
+function App() {
+  const element = useRoutes(routes)
+  return (
+      <div className="App">
+        {element}
+      </div>
+  );
+}
+
+export default App;
+
+//路由使用及注册
+  render() {
+    return ( 
+      <div className='body'>
+        <div className="container">
+          <div className="row">
+          // 路由使用
+            <Link to="/home">Home</Link>
+----------------------------------------------
+             {/*<Routes>
+              <Route path='/home' element={<Home/>} />
+            </Routes> */}
+            // 路由注册
+            <Outlet/>
+          </div>
+        </div>
+      </div>
+    )
+  }
+```
+
