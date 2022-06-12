@@ -2471,7 +2471,60 @@ export default class index extends Component {
     })
   }
 ```
-### 6.1.5 异步action-
+### 6.1.5 创建使用action
+```jsx
+//count_action.js
+
+// 为count生成action对象
+// const createDecrement = ()=>({type:'increment',data})
+// function createIncrement(data){
+//   return {type:'increment',data}
+// }
+const createIncrement = data=>({type:'increment',data})
+const createDecrement = data=>({type:'increment',data})
+
+//count.js
+import React, { Component } from 'react'
+import store from '../../../redux/store'
+// 引入ationCreator 专门用于创建acion对象
+import {createDecrement,createIncrement} from '../../../redux/count_action'
+export default class index extends Component {
+  componentDidMount(){
+    // 检测redux中的状态的变化，只要变化，就调用render
+    store.subscribe(()=>{
+      this.setState({})
+    })
+  }
+  
+  increment = ()=>{
+    const {value} = this.selected
+    store.dispatch(createIncrement)
+  }
+  decrement = ()=>{
+    const {value} = this.selected
+    store.dispatch(createDecrement)
+  }
+}
+
+```
+### 6.1.6 常量模块的使用
+- 增加 常量模块的使用(用于定义action对象中常量的使用)<span style="color:red">一般用大写定义 防止写错</span>
+```jsx
+//constant.js
+export const INCREMENT = 'increment'
+export const DECREMENT = 'decrement'
+
+//count_action.js
+import { INCREMENT,DECREMENT } from "./constant"
+export const createIncrement = data=>({type:INCREMENT,data})
+export const createDecrement = data=>({type:DECREMENT,data})
+```
+### 6.1.6 异步action的使用
+- 同步acytion指返回action的值为Object类型的一般对象
+- 异步acytion指返回action的值为函数
+```JSX
+
+```
 # 七、antd的使用
 - ant-design(蚂蚁金服)
 ## 7.1 antd的基本使用
