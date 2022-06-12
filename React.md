@@ -1730,6 +1730,7 @@ import { Link } from 'react-router-dom'
 - 用一般组件来封装自定义属性的NavLink
 - 标签体中的内容即是 标签属性childern(通过this.props.children可以获取标签体中的内容)
 ```jsx
+//Mynavlink/index.js
 import React, { Component } from 'react'
 import {NavLink} from 'react-router-dom'
 export default class index extends Component {
@@ -2334,3 +2335,145 @@ export default function index() {
 ### 5.3.10 解析路径
 - useResolvedPath('/home?id=1121&name=ksk#que')
 - 给定一个URL值，解析其中path,search,hash值
+# 六、redux的使用
+- yarn add  redux
+- - ![redux](./image//redux.png)
+## 6.0 未使用redux加减案例
+```jsx
+import React, { Component } from 'react'
+import store from '../../../redux/store'
+export default class index extends Component {
+  state = {
+    count:0
+  }
+  increment = ()=>{
+    const {value} = this.selected
+    this.setState({count:this.state.count+value*1})
+  }
+  decrement = ()=>{
+    const {value} = this.selected
+    this.setState({count:this.state.count-value*1})
+
+  }
+  incrementIfOdd = ()=>{
+    const {value} = this.selected
+    if(this.state.count%2!=0){
+      this.setState({count:this.state.count+value*1})
+    }
+  }
+  incrementAsync = ()=>{
+    const {value} = this.selected
+    setInterval(() => {
+      this.setState({count:this.state.count+value*1})
+    }, 5000);
+  }
+  render() {
+    return (
+      <div>
+        <p>当求和为{this.state.count}</p>
+        <select ref={c=>this.selected = c}>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <button onClick={this.increment}>加</button>
+        <button onClick={this.decrement}>减</button>
+        <button onClick={this.incrementIfOdd}>奇数加</button>
+        <button onClick={this.incrementAsync}>异步加</button>
+      </div>
+    )
+  }
+}
+```
+## 6.1 redux的基本使用
+- 1.创建store
+- 2.创建处理器reducer
+- 3.获取predata(store.getState())
+- 4.使用store来dispatch(path,data)来告诉reducer处理类型及data
+- 5.检测store变化store.subscribe()
+### 6.1.1 创建store
+```jsx
+import { createStore } from "redux";
+import count from './count_reducer'
+export default createStore(count)
+```
+### 6.1.2 创建处理器reducer
+```jsx
+const initstate = 0
+// 形参默认值初始化 prestate的值
+export default function countreducer(prestate=initstate,action){
+  // 初始化
+  // if(prestate === undefined) prestate = 0
+  const {type,data} = action
+  switch(type){
+    case 'increment':
+      return prestate+data
+    case 'decrement':
+    return prestate+data
+      case 'incrementIfOdd':
+    return prestate+data
+    default :
+    return prestate
+  }
+}
+```
+### 6.1.3 使用store来dispatch(path,data)来告诉reducer处理类型及data
+- 
+```jsx
+import React, { Component } from 'react'
+import store from '../../../redux/store'
+export default class index extends Component {
+  componentDidMount(){
+    // 检测redux中的状态的变化，只要变化，就调用render
+    store.subscribe(()=>{
+      this.setState({})
+    })
+  }
+  increment = ()=>{
+    const {value} = this.selected
+    // 分发 告诉reducer处理类型及data
+    store.dispatch({type:'increment',data:value*1})
+  }
+  decrement = ()=>{
+    const {value} = this.selected
+    store.dispatch({type:'decrement',data:value*1})
+
+  }
+  render() {
+    return (
+      <div>
+       {/* 获取store中初始值 */}
+        <p>当求和为{store.getState()}</p>
+        <select ref={c=>this.selected = c}>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <button onClick={this.increment}>加</button>
+        <button onClick={this.decrement}>减</button>
+        <button onClick={this.incrementIfOdd}>奇数加</button>
+        <button onClick={this.incrementAsync}>异步加</button>
+      </div>
+    )
+  }
+}
+
+```
+### 6.1.4 检测redux中的状态的变化，只要变化，就调用render
+- 在index中
+```jsx
+  componentDidMount(){
+    // 检测redux中的状态的变化，只要变化，就调用render
+    store.subscribe(()=>{
+      this.setState({})
+    })
+  }
+```
+### 6.1.5 异步action-
+# 七、antd的使用
+- ant-design(蚂蚁金服)
+## 7.1 antd的基本使用
+
+
