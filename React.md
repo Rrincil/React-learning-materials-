@@ -2972,6 +2972,206 @@ export default createStore(Allreducer,composeWithDevTools(applyMiddleware(thunk)
 ## 8.1 antd的基本使用
 # 九、React扩展的使用
 - 
-## 9.1 setState()
+## 9.1 setState()的使用
+- 使用原则：
+  - 1.如果新状态不依赖原状态===>使用对象式
+  - 2.如果新状态依赖原状态===>使用函数式
+  - 3.如果需要在setState()执行之后获取最新状态数据，要在第二个callbcak回调函数中执行
+### 9.1.1 setState({},callback) 对象式调用
+- 是函数式调用的语法糖
+- setState({},callback) 在回调函数中更新
+```jsx
+import React, { Component } from 'react'
+export default class app extends Component {
+  state = {
+    count:0
+  }
+  add = ()=>{
+    const {count} = this.props.state
+    count++
+    // 在回调中显示
+    this.setState({count},()=>{
+      console.log(this.props.state.count);
+    })
+  }
+  render() {
+    const {count} = thid.props.state
+    return (
+
+      <div>
+        <h1>app</h1>
+        <p>{count}</p>
+        <button onClick={this.add}>加</button>
+      </div>
+    )
+  }
+}
+
+```
+### 9.1.2 setState((state,props)=>{},callback) 函数式调用
+- setState((state,props)=>{},callback)
+```jsx
+import React, { Component } from 'react'
+
+export default class app extends Component {
+  state = {
+    count:0
+  }
+  add = ()=>{
+    const {count} = this.props.state
+    count++
+    this.setState({count},()=>{
+      console.log(this.props.state.count);
+    })
+  }
+  // 函数式调用---直接改变state中的值
+  add2 = ()=>{
+    this.setState((state,props)=>{
+      return {count:state.count+1}
+    })
+  }
+  // add2=()=>{this.setState(state=>({count:state.count+1}))}
+  render() {
+    const {count} = thid.props.state
+    return (
+
+      <div>
+        <h1>app</h1>
+        <p>{count}</p>
+        <button onClick={this.add}>加</button>
+        <button onClick={this.add2}>函数式加</button>
+      </div>
+    )
+  }
+}
+
+```
+## 9.2 函数式组件Hooks的使用
+### 9.2.1 lazyLoad 的使用
+- 组件的懒加载
+- 导入import {lazy} from 'react'
+- 使用：const Home = lazy(()=>import( '../components/Home'))
+- 使用<Suspense fallback={<h1>Loading</h1>}></Suspense>
+```jsx
+// router/index.js
+import { lazy } from "react";
+import {Navigate } from "react-router-dom";
+// 路由懒加载
+const Home = lazy(()=>import( '../components/Home'))
+const Study = lazy(()=>import('../components/body/study'))
+const routes = [
+  {
+    path:'/',
+    element:<Navigate to="/home"/>
+  },
+  {
+    path:'/home',
+    element: <Home/>,
+    children:[
+      {
+        path:'study',
+        element:<Study/>
+      }
+    ]
+  },
+]
+export default routes
+
+//App.js
+import { Suspense } from 'react';
+import './App.css';
+import routes from './routes'
+import { useRoutes } from 'react-router-dom';
+function App() {
+  const elements =  useRoutes(routes);
+  return (
+      <div className="App">
+      {/* 未加载出来时  显示正在加载 */}
+        <Suspense fallback={<h1>Loading</h1>}>
+          {elements}
+        </Suspense>
+      </div>
+  );
+}
+
+export default App;
+```
+### 9.2.2 stateHook 的使用
+- 函数式组件使用state------useState
+- const [count,usecount] = React.useState(initstate初始值)
+```jsx
+import React,{ useState } from 'react'
+export default function index() {
+  const [count,usecount] = React.useState(0)
+  function add(){
+    //第一种写法
+    usecount(count+1)
+    //第二种写法
+    usecount(count=>count+1)
+  }
+  return (
+    <div>
+      <p>{count}</p>
+      <button onClick={add}>加</button>
+    </div>
+  )
+}
+
+```
+### 9.2.3 EffectHook 的使用
+- React.useEffect(callback,[检测值])---检测值变化一次回调执行一次
+- React.useEffect(callback,[])---谁也不检测，回调函数只执行一次
+- React.useEffect(callback)---检测所有值，只要有值变化便执行一次 
+- callback中的回调函数的返回值相当于componentWillunmount
+```jsx
+import React,{ReactDOM, useState,useEffect } from 'react'
+export default function index() {
+  const [count,usecount] = React.useState(0)
+  //加1
+  const add=()=>{
+    //第一种写法
+    usecount(count+1)
+    //第二种写法
+    usecount(count=>count+1)
+  }
+  //加1
+  function useEffectADD(){
+    let timer = useEffect(()=>{
+      setInterval(()=>{ 
+        usecount(count+1)
+      },500)
+      return ()=>{     //返回的函数相当于componentWillunmount
+        clearInterval(timer) // 清除定时器
+      }
+    },[])
+  }
+  //卸载组件
+  function didmount(){
+    ReactDOM.unmountComponentAtNode(document.getElementById('root'))
+  }
+  // 卸载之前清空定时器
+  React.componentWill
+  return (
+    <div>
+      <p>{count}</p>
+      {/* <button onClick={add}>加</button> */}
+      <button onClick={useEffectADD}>加</button>
+      <button onClick={didmount}>卸载组件</button>
+    </div>
+  )
+}
+
+```
+### 9.2.4 RefHook 的使用
+- 
+```jsx
+
+```
+## 9.3 Framgment 的使用
+- 
+```jsx
+
+```
+
 
 
