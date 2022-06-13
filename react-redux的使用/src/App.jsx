@@ -6,7 +6,6 @@ function App() {
   const elements =  useRoutes(routes);
   return (
       <div className="App">
-        {/* 注册路由 */}
         {elements}
       </div>
   );

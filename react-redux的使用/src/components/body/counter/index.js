@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import store from '../../../redux/store'
 // 引入ationCreator 专门用于创建acion对象
-import {createDecrement,createIncrement,createIncrementOFIdd,createIncrementAsync} from '../../../redux/count_action'
+import {createDecrement,createIncrement,createIncrementOFIdd,createIncrementAsync} from '../../../redux/actions/count'
 export default class index extends Component {
   componentDidMount(){
     // 检测redux中的状态的变化，只要变化，就调用render

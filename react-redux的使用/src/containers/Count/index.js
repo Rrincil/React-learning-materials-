@@ -1,7 +1,7 @@
 // 引入UI容器
 import CountUI from '../../components/body/counter/count2'
 // 引入createIncrement
-import { createIncrement,createDecrement } from '../../redux/count_action';
+import { createIncrement,createDecrement } from '../../redux/actions/count';
 //引入connect 连接UI组件与redux
 import { connect } from 'react-redux'
 //返回的对象中的key作为传递给UI组件的key,value作为传递的---状态
