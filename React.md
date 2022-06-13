@@ -3163,7 +3163,7 @@ export default function index() {
 
 ```
 ### 9.2.4 RefHook 的使用
-- 
+- 类式组件中使用ref---React.createRef()
 ```jsx
 
 ```
