@@ -2335,7 +2335,7 @@ export default function index() {
 ### 5.3.10 解析路径
 - useResolvedPath('/home?id=1121&name=ksk#que')
 - 给定一个URL值，解析其中path,search,hash值
-# 六、redux的使用
+# 六、redux与react-redux的使用
 - yarn add  redux
 - - ![redux](./image//redux.png)
 ## 6.0 未使用redux加减案例
@@ -2464,12 +2464,35 @@ export default class index extends Component {
 ### 6.1.4 检测redux中的状态的变化，只要变化，就调用render
 - 在index中
 ```jsx
+// count.js
   componentDidMount(){
     // 检测redux中的状态的变化，只要变化，就调用render
     store.subscribe(()=>{
       this.setState({})
     })
   }
+//index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import 'bootstrap/dist/js/bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter } from 'react-router-dom';
+import store from './redux/store'
+const root = ReactDOM.createRoot(document.getElementById('root'));
+//检测redux中状态的改变，若改变就重新渲染App组件
+store.subscribe(()=>{
+  ReactDOM.render(<App/>,document.getElementById('root'));
+})
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+        <App/>
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
 ```
 ### 6.1.5 创建使用action
 ```jsx
@@ -2567,7 +2590,218 @@ export default class index extends Component {
 }
 ```
 ## 6.2 react-redux的基本使用
-### 6.2.1 
+- npm i react-redux
+- !Alt[react-redux](./image/react-redux.png)
+### 6.2.1 react-redux基本使用
+- 使用react-redux 不必再监听redux状态变化
+- 1.所有UI组件必须包裹一个容器组件，为父子关系
+- 2.容器组件中使用redux的api 而UI组件中不能使用
+- 3.容器组件会传给UI组件：(1):redux中所保存的状态，(2):用于操作状态的方法 ----（均通过props传递）
+#### (1)容器组件连接UI组件
+- 创建连接 connect(function,function)(CountUI)
+```jsx
+// 引入UI容器
+import CountUI from '../../components/body/counter/count2'
+//引入connect 链接UI组件与redux
+import { connect } from 'react-redux'
+export default CountCountainer = connect()(CountUI)
+
+```
+#### (2)UI组件连接redux
+- <Count store={store}/>通过props连接store
+```jsx
+
+import React, { Component } from 'react'
+import './index.less'
+import { Outlet } from 'react-router-dom'
+import Count from './counter/count2'
+import store from '../../redux/store'
+export default class index extends Component {
+  render() {
+    return ( 
+      <div className='body'>
+        <div className="container">
+          <div className="row">
+            <Count store={store}/>
+            {/* <Routes>
+              <Route path='/home' element={<Home/>} />
+            </Routes> */}
+            <Outlet/>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+```
+#### (3)容器组件向UI组件传值（props）(传递1.状态 2.操作状态得方法)
+-  connect(mapStateToprops(),mapDispathToprops())(CountUI)
+```jsx
+// 引入UI容器
+import CountUI from '../../components/body/counter/count2'
+// 引入createIncrement
+import { createIncrement,createDecrement } from '../../redux/count_action';
+//引入connect 连接UI组件与redux
+import { connect } from 'react-redux'
+//返回的对象中的key作为传递给UI组件的key,value作为传递的---状态
+function mapStateToprops(state){
+  return {count:state};
+}
+//返回的对象中的key作为传递给UI组件的key,value作为传递UI组件---操作状态的方法
+function mapDispathToprops(dispatch){
+  return {
+    jia:number=>dispatch(createIncrement(number)),
+    jian:number=>dispatch(createDecrement(number)) 
+  };
+}
+export default CountCountainer = connect(mapStateToprops,mapDispathToprops)(CountUI)
+
+//UI组件中接收props
+import React, { Component } from 'react'
+export default class count2 extends Component {
+  increment = ()=>{
+    const {value} = this.selected
+    console.log(this.props.count);
+    //使用容器组件传递过来的jia方法
+    this.props.jia(value*1)
+  }
+}
+```
+### 6.2.2 优化1--mapDispathToProps()简写---action自动分发
+- react-redux帮助action自动分发，自动调用dispatch()
+```jsx
+// 引入UI容器
+import CountUI from '../../components/body/counter/count2'
+// 引入createIncrement
+import { createIncrement,createDecrement } from '../../redux/count_action';
+//引入connect 连接UI组件与redux
+import { connect } from 'react-redux'
+export default connect(
+  state => ({count:state}),
+  // dispatch=>({
+  //   jia:number=>dispatch(createIncrement(number)),
+  //   jian:number=>dispatch(createDecrement(number)) 
+  // })
+  // action自动分发，自动调用dispatch()
+  {
+    jia:createIncrement,//返回一个action对象
+    jian:createDecrement
+  }
+)(CountUI)
+```
+### 6.2.3 优化2--UI组件连接redux(连接store)---provider的使用帮助组件传递store
+```jsx
+// body.js
+import React, { Component } from 'react'
+import './index.less'
+import { Outlet } from 'react-router-dom'
+import Count from './counter/count2'
+export default class index extends Component {
+  render() {
+    return ( 
+      <div className='body'>
+        <div className="container">
+          <div className="row">
+            {/* <Count store={store}/>*/}
+            <Count/>
+            {/* <Routes>
+              <Route path='/home' element={<Home/>} />
+            </Routes> */}
+            <Outlet/>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+//index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import 'bootstrap/dist/js/bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux/es/exports';
+import store from './redux/store'
+const root = ReactDOM.createRoot(document.getElementById('root'));
+// 使用react-redux不必再监听redux变化
+//检测redux中状态的改变，若改变就重新渲染App组件
+// store.subscribe(()=>{
+//   ReactDOM.render(<App/>,document.getElementById('root'));
+// })
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App/>
+      </Provider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
+```
+### 6.2.4 整合UI和容器组件(整合成一个文件)
+```jsx
+//count2.jsx
+// 引入UI容器
+// import CountUI from '../../components/body/counter/count2'
+// 引入createIncrement
+import { createIncrement,createDecrement } from '../../redux/count_action';
+//引入connect 连接UI组件与redux
+import { connect } from 'react-redux'
+
+import React, { Component } from 'react'
+class count extends Component {
+  
+  increment = ()=>{
+    const {value} = this.selected
+    console.log(this.props.count);
+    //使用容器组件传递过来的jia方法
+    this.props.jia(value*1)
+  }
+  decrement = ()=>{
+    const {value} = this.selected
+
+  }
+  incrementIfOdd = ()=>{
+    const {value} = this.selected
+  }
+  incrementAsync = ()=>{
+    const {value} = this.selected
+  }
+  render() {
+    return (
+      <div>
+        <p>当求和为{}</p>
+        <select ref={c=>this.selected = c}>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <button onClick={this.increment}>加</button>
+        <button onClick={this.decrement}>减</button>
+        <button onClick={this.incrementIfOdd}>奇数加</button>
+        <button onClick={this.incrementAsync}>异步加</button>
+      </div>
+    )
+  }
+}
+
+
+export default connect(
+  state => ({count:state}),
+  // action自动分发，自动调用dispatch()
+  {
+    jia:createIncrement,//返回一个action对象
+    jian:createDecrement
+  }
+)(count)
+```
+### 6.2.5 数据共享整合
 # 七、antd的使用
 - ant-design(蚂蚁金服)
 ## 7.1 antd的基本使用
