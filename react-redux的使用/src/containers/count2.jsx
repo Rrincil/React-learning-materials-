@@ -16,6 +16,7 @@ class count extends Component {
   }
   decrement = ()=>{
     const {value} = this.selected
+    this.props.jian(value*1)
 
   }
   incrementIfOdd = ()=>{
@@ -27,6 +28,9 @@ class count extends Component {
   render() {
     return (
       <div>
+        <p>person组件中的person为{this.props.person.map(item=>{
+          <li key={item.id}>{item.name}-----{item.age}</li>
+        })}</p>
         <p>当求和为{}</p>
         <select ref={c=>this.selected = c}>
           <option value="1">1</option>

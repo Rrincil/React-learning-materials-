@@ -2801,9 +2801,174 @@ export default connect(
   }
 )(count)
 ```
-### 6.2.5 数据共享整合
-# 七、antd的使用
+### 6.2.5 reducers合并 
+- 使用combineReducers合并reducer
+```jsx
+//store.js
+
+//引入执行中间件帮助使用thunk applyMiddleware(thunk)
+import { createStore,applyMiddleware,combineReducers } from "redux";
+import count from './reducers/count'
+import person from "./reducers/person";
+//引入redux-thunk 用于支持异步action
+import thunk from "redux-thunk";
+//reducers的合并
+const Allreducer = combineReducers({
+  count,
+  person
+})
+export default createStore(Allreducer,applyMiddleware(thunk))
+
+// 容器中使用 count2.js person.js
+export default connect(
+  state => ({count:state.count}),
+  // action自动分发，自动调用dispatch()
+  {
+    jia:createIncrement,//返回一个action对象
+    jian:createDecrement
+  }
+)(count)
+export default connect(
+  state => ({persons:state.person}),
+  // action自动分发，自动调用dispatch()
+  {
+    personInto:createInsertperson
+  }
+)(person)
+
+
+
+```
+### 6.2.6 再count组件中使用person的信息（一个组件和另一个组件通信）
+- 需要在count组件中 connect state中暴露出来
+```jsx
+export default connect(
+  state => ({ 
+    count: state.count,
+    persons: state.person
+   }),
+  // action自动分发，自动调用dispatch()
+  {
+    jia: createIncrement,//返回一个action对象
+    jian: createDecrement
+  }
+)(count)
+```
+- count.jsx完整代码
+```jsx
+// 引入UI容器
+// import CountUI from '../../components/body/counter/count2'
+// 引入createIncrement
+import { createIncrement, createDecrement } from '../redux/actions/count';
+//引入connect 连接UI组件与redux
+import { connect } from 'react-redux'
+
+import React, { Component } from 'react'
+class count extends Component {
+
+  increment = () => {
+    const { value } = this.selected
+    console.log(this.props);
+    //使用容器组件传递过来的jia方法
+    this.props.jia(value * 1)
+  }
+  decrement = () => {
+    const { value } = this.selected
+    this.props.jian(value * 1)
+
+
+  }
+  incrementIfOdd = () => {
+    const { value } = this.selected
+  }
+  incrementAsync = () => {
+    const { value } = this.selected
+  }
+  render() {
+    console.log(this.props);
+    return (
+      <div>
+        <p>person组件中的person为{this.props.persons.map(item => {
+          return <li key={item.id}>{item.name}-----{item.age}</li>
+        })}</p>
+        <p>当求和为{this.props.count}</p>
+        <select ref={c => this.selected = c}>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <button onClick={this.increment}>加</button>
+        <button onClick={this.decrement}>减</button>
+        <button onClick={this.incrementIfOdd}>奇数加</button>
+        <button onClick={this.incrementAsync}>异步加</button>
+      </div>
+    )
+  }
+}
+
+
+export default connect(
+  state => ({ 
+    count: state.count,
+    persons: state.person
+   }),
+  // action自动分发，自动调用dispatch()
+  {
+    jia: createIncrement,//返回一个action对象
+    jian: createDecrement
+  }
+)(count)
+```
+### 6.2.7 关于纯函数的概念（redux的reducer函数必须是一个纯函数）
+- 1.输入相同的实参，将得到同样的输出
+- 2.不许遵守以下约束
+  - 1).不得改写参数数据
+  - 2).不会产生任何副作用（例如网络请求，输入输出设备）
+  - 3).不能调用Data.now()或者Math.random()等不纯的方法
+```jsx
+//  reducer/person.js中
+import { INSERTPERSON } from "../constant";
+const initstate = [{id:'001',name:'tom',age:19}]
+export default function personreducer(prestate=initstate,action){
+  const {data,type} = action
+  switch (type) {
+    case INSERTPERSON:
+      // prestate.unshift(data)----- 参数改变了使得函数不纯
+      return [data,...prestate]
+    default:
+      return prestate
+  }
+}
+```
+### 6.2.8 react-redux工具的使用（redux-devtools-extension）
+- 1.浏览器安装扩展
+- 2.npm i redux-devtools-extension 代码配置
+- 3.引入redux-devtools-extension 使用composeWithDevTools
+```jsx
+//store.js
+//引入执行中间件帮助使用thunk applyMiddleware(thunk)
+import { createStore,applyMiddleware,combineReducers } from "redux";
+import count from './reducers/count'
+import person from "./reducers/person";
+//引入redux-thunk 用于支持异步action
+import thunk from "redux-thunk";
+//引入redux-devtools-extension 使用composeWithDevTools
+import { composeWithDevTools } from "redux-devtools-extension";
+//reducers的合并
+const Allreducer = combineReducers({
+  count,
+  person
+})
+export default createStore(Allreducer,composeWithDevTools(applyMiddleware(thunk)))
+
+```
+# 七、serve扩展的使用
+- 可以快速开展一个本地服务器
+- npm i serve -g
+- 命令： serve 文件夹名（在该文件夹下开启一个服务器）
+# 八、antd的使用
 - ant-design(蚂蚁金服)
-## 7.1 antd的基本使用
+## 8.1 antd的基本使用
 
 
