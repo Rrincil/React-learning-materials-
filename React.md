@@ -2520,11 +2520,54 @@ export const createIncrement = data=>({type:INCREMENT,data})
 export const createDecrement = data=>({type:DECREMENT,data})
 ```
 ### 6.1.6 异步action的使用
+- 使用中间件 npm i redux-thunk（thunk形实转换函数） 处理使得store认得函数
 - 同步acytion指返回action的值为Object类型的一般对象
 - 异步acytion指返回action的值为函数
 ```JSX
+//store.js
+//引入执行中间件帮助使用thunk applyMiddleware(thunk)
+import { createStore,applyMiddleware } from "redux";
+import count from './count_reducer'
+//引入redux-thunk 用于支持异步action
+import thunk from "redux-thunk";
+export default createStore(count,applyMiddleware(thunk))
 
+//count_action.js
+import { INCREMENT,DECREMENT,INCREMENTIFODD,INCREMENTASYNC } from "./constant"
+import store from "./store"
+export const createIncrement = data=>({type:INCREMENT,data})
+export const createDecrement = data=>({type:DECREMENT,data})
+export const createIncrementOFIdd = data =>({type:INCREMENTIFODD,data})
+// 返回异步action 
+export const createIncrementAsync = (data,time) =>{
+  return ()=>{
+    setTimeout(()=>{
+      store.dispatch({type:INCREMENT,data})
+    // store.setState(createIncrement(data))
+    },time)
+  }
+}
+//count.js
+import React, { Component } from 'react'
+import store from '../../../redux/store'
+// 引入ationCreator 专门用于创建acion对象
+import {createIncrementAsync} from '../../../redux/count_action'
+export default class index extends Component {
+  componentDidMount(){
+    // 检测redux中的状态的变化，只要变化，就调用render
+    store.subscribe(()=>{
+      this.setState({})
+    })
+  }
+  // 异步action
+  incrementAsync = ()=>{
+    const {value} = this.selected
+    this.setState(createIncrementAsync(value*1,500))
+  }
+}
 ```
+## 6.2 react-redux的基本使用
+### 6.2.1 
 # 七、antd的使用
 - ant-design(蚂蚁金服)
 ## 7.1 antd的基本使用
