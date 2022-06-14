@@ -24,13 +24,15 @@ export default function index() {
     ReactDOM.unmountComponentAtNode(document.getElementById('root'))
   }
   // 卸载之前清空定时器
-  React.componentWill
+  // React.componentWill
   return (
     <div>
+      <input type="text" ref={this.myref}/>
       <p>{count}</p>
       {/* <button onClick={add}>加</button> */}
       <button onClick={useEffectADD}>加</button>
       <button onClick={didmount}>卸载组件</button>
+      <button onClick={showref}>显示数据</button>
     </div>
   )
 }

@@ -3047,7 +3047,7 @@ export default class app extends Component {
 
 ```
 ## 9.2 函数式组件Hooks的使用
-### 9.2.1 lazyLoad 的使用
+### 9.2.1 lazyLoad的使用
 - 组件的懒加载
 - 导入import {lazy} from 'react'
 - 使用：const Home = lazy(()=>import( '../components/Home'))
@@ -3096,7 +3096,7 @@ function App() {
 
 export default App;
 ```
-### 9.2.2 stateHook 的使用
+### 9.2.2 stateHook的使用
 - 函数式组件使用state------useState
 - const [count,usecount] = React.useState(initstate初始值)
 ```jsx
@@ -3118,7 +3118,7 @@ export default function index() {
 }
 
 ```
-### 9.2.3 EffectHook 的使用
+### 9.2.3 EffectHook的使用
 - React.useEffect(callback,[检测值])---检测值变化一次回调执行一次
 - React.useEffect(callback,[])---谁也不检测，回调函数只执行一次
 - React.useEffect(callback)---检测所有值，只要有值变化便执行一次 
@@ -3162,16 +3162,108 @@ export default function index() {
 }
 
 ```
-### 9.2.4 RefHook 的使用
-- 类式组件中使用ref---React.createRef()
+### 9.2.4 RefHook的使用
+#### (1)类式组件中使用ref---const myref = React.createRef()
+```jsx
+import React, { Component } from 'react'
+export default class hooks extends Component {
+  myref = React.createRef()
+  showref = ()=>{
+    alert(this.myref.current.value)
+  }  
+  render() {
+    return (
+      <div>
+        <input type="text" ref={this.myref}/>
+        <button onClick={showref}>显示数据</button>
+      </div>
+    )
+  }
+}
+```
+#### (2)函数式组件中使用ref----const myref = useRef()
+```jsx
+import React,{ReactDOM, useState,useEffect,useRef } from 'react'
+export default function Index() {
+  const myref = useRef()
+  function showref(){
+    console.log(myref.current.value);
+  }  
+  return (
+    <div>
+      <input type="text" ref={myref}/>
+      <button onClick={showref}>显示数据</button>
+    </div>
+  )
+}
+
+```
+### 9.2.5 Framgment的使用
+- 去除外面多余包裹的div---使用Framgment可以加key属性(只能加key属性用于遍历)（使用成空标签也可以）
+```jsx
+import React, { Component, Fragment } from 'react'
+import Head from '../head/head'
+import Body from '../body'
+import Foot from '../foot'
+export default class index extends Component {
+  render() {
+    return (
+      // 使用成空标签也可以
+      // <>
+      //   <Head></Head>
+      //   <Body></Body>
+      //   <Foot></Foot>
+      // </>      
+      <Fragment key={1}>
+        <Head></Head>
+        <Body></Body>
+        <Foot></Foot>
+      </Fragment>
+    )
+  }
+}
+
+```
+### 9.2.5 Context的使用
+- 多用于祖孙组件传值使用(跳过父组件传递)
+#### 9.2.5.1 类式组件中Context的使用
+- 1.创建一个Mycontext------const Mycontext = createContext()
+- 2.使用Mycontext
+  - (1).使用Mycontext.Provider包裹子组件
+  - (2).在Provider中的value属性传递值<Provider value={name}>此时被包裹的子组件以及孙组件都可以接收到值
+- 后代组件接收context
+  - (1).申明接收context (static  contextType = Mycontext)
+  - (2).在组件实例的context属性上收（this.context）
+```jsx
+
+
+
+```
+#### 9.2.5.2 类式和函数式组件通用Context写法
+- 1.创建一个Mycontext------const Mycontext = createContext()
+- 2.使用Consumer <Consumer>{value=>{ console.log(value); }}</Consumer>
 ```jsx
 
 ```
-## 9.3 Framgment 的使用
+### 9.2.5 PureComponent的使用
 - 
 ```jsx
 
+
 ```
+### 9.2.5 renderProps的使用
+- 
+```jsx
+
+
+```
+### 9.2.5  ErrorBoundary 的使用
+- 
+```jsx
+
+
+```
+
 
 
 
