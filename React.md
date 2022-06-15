@@ -3239,14 +3239,24 @@ export default class index extends Component {
 
 
 ```
-#### 9.2.5.2 类式和函数式组件通用Context写法
+#### 9.2.5.2 函数式组件通用Context写法
 - 1.创建一个Mycontext------const Mycontext = createContext()
 - 2.使用Consumer <Consumer>{value=>{ console.log(value); }}</Consumer>
 ```jsx
 
 ```
-### 9.2.5 PureComponent的使用
-- 
+### 9.2.5 组件优化PureComponent的使用
+- 1.只要执行了setState(),即便不改变状态数据，组件也会重新render()
+- 2.只要当前组件重新render(),就会自动重新render子组件，纵使子组件未更新数据（没有用到父组件任何数据）====》此时效率低
+- <span style="color:red">只有当组件的state或者props数据发生改变时才重新render()</span>
+- 原因：Componenet中的shouldComponentUpdata(nextPorops,nextState)总是返回true
+#### (1).解决原理
+```jsx
+
+
+```
+#### (2).PureComponent使用优化
+- <span style="color:red">注意：只做浅对比：State或者Props改变没</span>
 ```jsx
 
 
