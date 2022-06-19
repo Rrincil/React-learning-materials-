@@ -1500,7 +1500,6 @@ reportWebVitals();
 - 命令 rcc 快速构建react
 ## (7)唯一标识id 插件 UUID
 - yarn add uuid
-
 ## （8）父子组件，兄弟组件之间传值
 ### (8.1)兄弟传值----状态提升 （消息订阅）
 - (1)兄弟组件要用的，放在共同的父组件中
@@ -1537,7 +1536,7 @@ pubsub.unsubscribe('user_add');
 ### （8.2）父子传值
 - 父传子   props <son todolist={通过props向子组件传递的值} liuyan1={this.liuyan}/>
 - 子传父   1.父组件先通过props向子组件传递一个函数，2.子组件通过props拿到该函数，再通过该函数向父组件传值
-1. <son liuyan1={父组件的函数}/>---<son liuyan1={this.liuyan}/>
+1. <father liuyan1={父组件的函数}/>---<father liuyan1={this.liuyan}/>
 2. 子组件通过props拿到该函数并向父组件传值---this.props.liuyan1(data)
 ```jsx
 class index extends Component {
