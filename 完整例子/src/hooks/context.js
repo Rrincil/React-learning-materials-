@@ -1,4 +1,4 @@
-import React, { Component,createContext,Consumer } from 'react'
+import React, { Component,createContext} from 'react'
 const Mycontext = createContext()
 const {Provider} = Mycontext
 export default class A extends Component {
@@ -33,14 +33,21 @@ class C extends Component {
     return (
       <div>
         {console.log(this.context)}
-        {/* <Consumer>
-          {
-            value=>{
-              console.log(value);
-            }
-          }
-        </Consumer> */}
+        {/* <D></D> */}
       </div>
     )
   }
 }
+// function D(){
+//   return(
+//     <>
+//       <Consumer>
+//         {
+//           value=>{
+//             return <p>{value}</p>
+//           }
+//         }
+//       </Consumer>   
+//     </>
+//   )
+// }
